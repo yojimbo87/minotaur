@@ -1,5 +1,5 @@
 function Client() {
-    var cookieName = "";
+    var currentToken = 0;
     
     var connect = function() {    
         $("#button-send").click(function() {
@@ -15,8 +15,7 @@ function Client() {
         $.jsonp({
             url: "/connect",
             success: function(data) {
-                cookieName = data.cookie;
-                cname = data.cookie;
+                currentToken = data.token;
                 poll();
             }
         });
@@ -25,12 +24,18 @@ function Client() {
     var poll = function() {
         $.jsonp({
             url: "/poll",
-            data: {"cookie": cookieName, "cmd": "poll"},
+            data: {"token": currentToken, "cmd": "poll"},
             success: function(data) {
-                $.each(data, function (index, value) {
-                    parseMessage(value);    
-                });
+                currentToken = data.token;
+                if(data.messages) {
+	                $.each(data.messages, function (index, value) {
+	                    parseMessage(value);    
+	                });
+                }
                 poll();
+            },
+            error: function(xOptions, textStatus) {
+                debug(xOptions.context + " : " + textStatus);
             },
             timeout: 20000
         });
@@ -54,12 +59,14 @@ function Client() {
     };
     
     var sendMessage = function() {
+        if($("#text-send").val() != "") {
             $.jsonp({
                 url: "/msg",
-                data: {"cookie": cookieName, "cmd": "msg", "content": $("#text-send").val().replace(/</g, "&lt;").replace(/>/g, "&gt;")}
+                data: {"cmd": "msg", "content": $("#text-send").val().replace(/</g, "&lt;").replace(/>/g, "&gt;")}
             });
             
             $("#text-send").val("");
+        }
     };
     
     this.connect = connect;
@@ -69,3 +76,7 @@ $(document).ready(function() {
     var client = new Client();
     client.connect();
 });
+
+function debug(msg) {
+    $("#debug").append(msg + "<br />");
+}

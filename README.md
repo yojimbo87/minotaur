@@ -61,5 +61,5 @@ TODO
 ----
 
  * Client reconnection
- * Client/server side error handling
+ * Message sanitation
  * Documentation about architecture

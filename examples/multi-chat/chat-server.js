@@ -32,15 +32,15 @@ server = http.createServer(function(req, res) {
             });
             break;
 	    case "/connect":
-	        var sessionID = minotaur.connect(res);
-	        minotaur.broadcast({cmd: "in", id: sessionID});	        
+	        var sid = minotaur.connect(req, res);
+	        minotaur.broadcast({cmd: "in", id: sid});
 	        break;
 	    case "/poll":
 	        minotaur.poll(req, res, url.parse(req.url, true).query);
 	        break;
 	    case "/msg":
-	        minotaur.message(req, res, url.parse(req.url, true).query, function(sessionID, content) {
-	            minotaur.broadcast({cmd: "msg", id: sessionID, content: content});
+	        minotaur.message(req, res, url.parse(req.url, true).query, function(sid, content) {
+	            minotaur.broadcast({cmd: "msg", id: sid, content: content});
 	        });
 	        break;
         default:

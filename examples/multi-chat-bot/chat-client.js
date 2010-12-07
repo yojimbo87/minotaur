@@ -1,12 +1,11 @@
 function Client() {
-    var cookieName = "";
+    var currentToken = 0;
     
     var connect = function() {    
         $.jsonp({
             url: "/connect",
             success: function(data) {
-                cookieName = data.cookie;
-                globalCookieName = data.cookie;
+                currentToken = data.token;
                 poll();
             }
         });
@@ -15,12 +14,19 @@ function Client() {
     var poll = function() {
         $.jsonp({
             url: "/poll",
-            data: {"cookie": cookieName, "cmd": "poll"},
+            data: {"token": currentToken, "cmd": "poll"},
             success: function(data) {
-                $.each(data, function (index, value) {
-                    parseMessage(value);    
-                });
+                currentToken = data.token;
+                //debug("poll: " + currentToken);
+                if(data.messages) {
+                    $.each(data.messages, function (index, value) {
+                        parseMessage(value);    
+                    });
+                }
                 poll();
+            },
+            error: function(xOptions, textStatus) {
+                debug(xOptions.context + " : " + textStatus);
             },
             timeout: 20000
         });
@@ -61,8 +67,6 @@ $(document).ready(function() {
 
 var randomTimeout = Math.floor(Math.random()*11) * 1000 + 1000;;
 var randomStringLength = Math.floor(Math.random()*8) + 3;
-// cookieName will be stored also here during initial client connection
-var globalCookieName;
 
 function send() {
     setTimeout(function() {
@@ -71,7 +75,7 @@ function send() {
         
         $.jsonp({
             url: "/msg",
-            data: {"cookie": globalCookieName, "cmd": "msg", "content": generateString(randomStringLength)}
+            data: {"cmd": "msg", "content": generateString(randomStringLength)}
         });
         
         send();
