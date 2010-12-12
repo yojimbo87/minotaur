@@ -2,9 +2,8 @@ var sys = require("sys"),
    http = require("http"),
     url = require("url"),
      fs = require("fs"),
-   mino = require("../../lib/minotaur/server");
- 
-var minotaur = new mino(true);
+   mino = require("../../lib/minotaur/server"),
+   server;
 
 server = http.createServer(function(req, res) {
     var path = url.parse(req.url).pathname;
@@ -25,32 +24,30 @@ server = http.createServer(function(req, res) {
             });
             break;
         case "/chat-client.js":
-            fs.readFile("./" + path, function(err, data){
+            fs.readFile("." + path, function(err, data){
             	res.writeHead(200, {"Content-Type": "text/javascript"});
             	res.write(data, "utf8");
             	res.end();
             });
             break;
-	    case "/connect":
-	        var sid = minotaur.connect(req, res);
-	        minotaur.broadcast({cmd: "in", id: sid});
-	        break;
-	    case "/poll":
-	        minotaur.poll(req, res, url.parse(req.url, true).query);
-	        break;
-	    case "/msg":
-	        minotaur.message(req, res, url.parse(req.url, true).query, function(sid, content) {
-	            minotaur.broadcast({cmd: "msg", id: sid, content: content});
-	        });
-	        break;
         default:
-            res.writeHead(404);
-            res.write("404");
-            res.end();
+            // 404
             break;
     }
 });
-
 server.listen(8080);
+sys.log("Minotaur listening on port 8080");
 
-sys.log("Listening on 8080");
+var minotaur = new mino(server, true);
+
+minotaur.on("connect", function(session) {
+    minotaur.broadcast({cmd: "in", id: session.sid});
+    
+    session.on("message", function(message) {
+        minotaur.broadcast({cmd: "msg", id: session.sid, content: message});
+    });
+    
+    session.on("disconnect", function(message) {
+        minotaur.broadcast({cmd: "out", id: session.sid});
+    });
+});
