@@ -9,7 +9,7 @@ server = http.createServer(function(req, res) {
     var path = url.parse(req.url).pathname;
     switch(path) {
         case "/":
-            fs.readFile("./index.html", function (err, data) {
+            fs.readFile("./examples/multi-chat/index.html", function (err, data) {
                 res.writeHead(200, {"Content-Type": "text/html"});
                 res.write(data, "utf8");
 	            res.end();
@@ -17,14 +17,15 @@ server = http.createServer(function(req, res) {
             break;
         case "/jquery-1.4.4.min.js":
         case "/jquery.jsonp-2.1.4.min.js":
-            fs.readFile("../common" + path, function(err, data){
+        case "/minitaur.js":
+            fs.readFile("./examples/common" + path, function(err, data){
                 res.writeHead(200, {"Content-Type": "text/javascript"});
             	res.write(data, "utf8");
             	res.end();
             });
             break;
         case "/chat-client.js":
-            fs.readFile("." + path, function(err, data){
+            fs.readFile("./examples/multi-chat" + path, function(err, data){
             	res.writeHead(200, {"Content-Type": "text/javascript"});
             	res.write(data, "utf8");
             	res.end();
