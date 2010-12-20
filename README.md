@@ -71,6 +71,10 @@ Usage examples are located in 'examples' folder:
         mini.on("message", function(data) {
             // do something when client receive a message
         });
+        
+        mini.on("disconnect", function(data) {
+            // do something when client is disconnected from server
+        });
     });
 
 
@@ -103,7 +107,5 @@ Known issues
 TODO
 ----
 
- * Client reconnection and status
- * Client disconnection event 
  * Message sanitation
  * Documentation about architecture
