@@ -17,6 +17,7 @@ server = http.createServer(function(req, res) {
             break;
         case "/jquery-1.4.4.min.js":
         case "/jquery.jsonp-2.1.4.min.js":
+        case "/minitaur.js":
             fs.readFile("../common" + path, function(err, data){
                 res.writeHead(200, {"Content-Type": "text/javascript"});
             	res.write(data, "utf8");
@@ -41,6 +42,7 @@ sys.log("Minotaur listening on port 8080");
 var minotaur = new mino(server, true);
 
 minotaur.on("connect", function(session) {
+    minotaur.broadcast({cmd: "in", id: session.sid});
 
     session.on("message", function(message) {
         minotaur.broadcast({cmd: "msg", id: session.sid, content: message});

@@ -60,6 +60,7 @@ Known issues
 TODO
 ----
 
- * Client reconnection
+ * Client reconnection and status
+ * Client disconnection event 
  * Message sanitation
  * Documentation about architecture

@@ -1,65 +1,26 @@
-function Client() {
-    var currentToken = 0;
-    
-    var connect = function() {    
-        $.jsonp({
-            url: "/connect",
-            success: function(data) {
-                currentToken = data.token;
-                poll();
-            }
-        });
-    };
-    
-    var poll = function() {
-        $.jsonp({
-            url: "/poll",
-            data: {"token": currentToken, "cmd": "poll"},
-            success: function(data) {
-                currentToken = data.token;
-                //debug("poll: " + currentToken);
-                if(data.messages) {
-                    $.each(data.messages, function (index, value) {
-                        parseMessage(value);    
-                    });
-                }
-                poll();
-            },
-            error: function(xOptions, textStatus) {
-                debug(xOptions.context + " : " + textStatus);
-            },
-            timeout: 20000
-        });
-    };
-    
-    var parseMessage = function(msg) {
-        switch(msg.cmd) {
+var mini = new Minitaur();
+
+$(document).ready(function() {
+    mini.connect();
+    mini.on("message", function(data) {
+        switch(data.cmd) {
             case "in":
-                $("#area-chat").prepend("<div class=\"msg\">" + msg.id + " connected!</div>");
+                $("#area-chat").prepend("<div class=\"msg\">" + data.id + " connected!</div>");
                 break;
             case "out":
-                $("#area-chat").prepend("<div class=\"msg\">" + msg.id + " disconnected!</div>");
+                $("#area-chat").prepend("<div class=\"msg\">" + data.id + " disconnected!</div>");
                 break;
             case "msg":
-                $("#area-chat").prepend("<div class=\"msg\"><b>" + msg.id + "</b>: " + msg.content + "</div>");
-        	    break;
+                $("#area-chat").prepend("<div class=\"msg\"><b>" + data.id + "</b>: " + data.content + "</div>");
+                break;
             default:
                 break;
         }
-    };
-    
-    this.connect = connect;
-}
-
-$(document).ready(function() {
-    // initialize client
-    var client = new Client();
-    client.connect();
-
+    });
     // initialize periodical sending of random messages
-    send();
+    sendRandomMessage();
     
-    // clear chat area after 60 seconds
+    // clear chat area after 60 seconds to prevent large chat history
     setInterval(function() {        
         $("#area-chat").text("");
     }, 1000 * 60);
@@ -68,17 +29,14 @@ $(document).ready(function() {
 var randomTimeout = Math.floor(Math.random()*11) * 1000 + 1000;;
 var randomStringLength = Math.floor(Math.random()*8) + 3;
 
-function send() {
+function sendRandomMessage() {
     setTimeout(function() {
         randomNumber = Math.floor(Math.random()*11) * 1000 + 1000;
         randomStringLength = Math.floor(Math.random()*23) + 3;
         
-        $.jsonp({
-            url: "/msg",
-            data: {"cmd": "msg", "content": generateString(randomStringLength)}
-        });
+        mini.send(generateString(randomStringLength))
         
-        send();
+        sendRandomMessage();
     }, randomTimeout);
 }
 
@@ -91,4 +49,8 @@ function generateString(sLength)
         text += possible.charAt(Math.floor(Math.random() * possible.length));
 
     return text;
+}
+
+function debug(msg) {
+    $("#debug").append(msg + "<br />");
 }
