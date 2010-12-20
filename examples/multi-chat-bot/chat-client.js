@@ -17,6 +17,10 @@ $(document).ready(function() {
                 break;
         }
     });
+    mini.on("disconnect", function() {
+        $("#area-chat").prepend("<div class=\"msg\">Disconnected, reconnecting ...</div>");
+        setTimeout("mini.connect()", 10000);
+    });
     // initialize periodical sending of random messages
     sendRandomMessage();
     

@@ -18,11 +18,18 @@ $(document).ready(function() {
         }
         $("#area-chat").scrollTop($("#area-chat").height());
     });
+    mini.on("disconnect", function() {
+        $("#area-chat").append("<div class=\"msg\">Disconnected, reconnecting ...</div>");
+        $("#area-chat").scrollTop($("#area-chat").height());
+        setTimeout("mini.connect()", 10000);
+    });
     
+    // bind button click event for sending message
     $("#button-send").click(function() {
         sendMessage();
     });
     
+    // bind enter key event for sending message
     $("#text-send").keyup(function(e) {
         if(e.keyCode == 13) {
             sendMessage();
