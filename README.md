@@ -12,7 +12,7 @@ Compatibility
 
 **Server side:**
 
- * node.js v0.2.5 and v0.3.0
+ * tested with node.js v0.2.5 and v0.3.0
 
 **Client side (tested browsers):**
 
@@ -55,8 +55,11 @@ Usage examples are located in 'examples' folder:
             // do something when session is disconneting
         });
     });
-    
+
+
 **Client side:**
+
+Client code file is located in *examples/common/* folder as *minitaur.js*.
 
     // initialize minitaur client
     var mini = new Minitaur();
@@ -84,6 +87,7 @@ Dependencies
 **Server side:**
 
  * [node.js](http://nodejs.org/)
+ * [node-uuid](https://github.com/broofa/node-uuid) module for generating session IDs
  * [cookie-node](https://github.com/jed/cookie-node) module for signing cookies
 
 **Client side:**
