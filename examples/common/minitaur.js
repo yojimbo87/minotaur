@@ -1,12 +1,12 @@
 function Minitaur() {
-    var currentToken = 0;
+    var currentClientID = null;
     var status = "";
     
     var connect = function() {
         $.jsonp({
             url: "/connect",
             success: function(data) {
-                currentToken = data.token;
+                currentClientID = data.client;
                 status = "connected";
                 poll();
             },
@@ -18,11 +18,11 @@ function Minitaur() {
     };
     
     var poll = function() {
-        $.jsonp({
+        pollHandler = $.jsonp({
             url: "/poll",
-            data: {"token": currentToken, "cmd": "poll"},
+            timeout: 30000,
+            data: {"client": currentClientID, "cmd": "poll"},
             success: function(data) {
-                currentToken = data.token;
                 if(data.messages) {
                     $.each(data.messages, function (index, value) {
                         $(document).trigger("minitaur_message", value);
@@ -33,8 +33,7 @@ function Minitaur() {
             error: function(xOptions, textStatus) {
                 status = "disconnected";
                 $(document).trigger("minitaur_disconnect");
-            },
-            timeout: 20000
+            }
         });
     };
     
