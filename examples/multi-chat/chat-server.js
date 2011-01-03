@@ -42,7 +42,7 @@ sys.log("Minotaur listening on port 8080");
 var minotaur = new mino(server, true);
 
 minotaur.on("connect", function(session) {
-    minotaur.broadcast({cmd: "in", id: session.sid});
+    minotaur.broadcast({cmd: "in", id: session.sid}, session.sid);
     
     session.on("message", function(message) {
         minotaur.broadcast({cmd: "msg", id: session.sid, content: message});
