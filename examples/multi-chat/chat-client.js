@@ -2,6 +2,12 @@ var mini = new Minitaur();
     
 $(document).ready(function() {
     mini.connect();
+    
+    mini.on("connect", function() {
+        $("#area-chat").append("<div class=\"msg\">Connected ...</div>");
+        $("#area-chat").scrollTop($("#area-chat").height());
+    });
+    
     mini.on("message", function(data) {
         switch(data.cmd) {
             case "in":

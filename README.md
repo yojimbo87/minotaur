@@ -68,7 +68,11 @@ Client code file is located in *examples/common/* folder as *minitaur.js*.
         // connect to server
         mini.connect();
         
-        // send message from client
+        mini.on("connect", function() {
+            // do something when client is connected to server
+        });
+        
+        // send message from client to server
         mini.send("hello");
         
         mini.on("message", function(data) {

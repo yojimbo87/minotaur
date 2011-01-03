@@ -8,6 +8,7 @@ function Minitaur() {
             success: function(data) {
                 currentClientID = data.client;
                 status = "connected";
+                $(document).trigger("minitaur_connect");
                 poll();
             },
             error: function(xOptions, textStatus) {
@@ -48,6 +49,11 @@ function Minitaur() {
     
     var on = function(eventName, callback) {
         switch(eventName) {
+            case "connect":
+	            $(document).bind("minitaur_connect", function(event) {
+	                callback();
+	            });
+	            break;
             case "message":
                 $(document).bind("minitaur_message", function(event, data) {
                     callback(data);
