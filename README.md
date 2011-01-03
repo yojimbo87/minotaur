@@ -18,7 +18,7 @@ Compatibility
 
  * Internet Explorer 8
  * Firefox 3.6.12+
- * Chrome 8.0.552.210
+ * Chrome 8.0.552.210+
  * Opera 10.63+
 
 
@@ -102,10 +102,11 @@ Stability and performance
 Successfuly tested with 50 simultaneously connected clients through various browsers using multi-chat-bot example.
 
 
-Known issues
+Known limitations
 ------------
 
- * [Page loading behavior](http://code.google.com/p/jquery-jsonp/issues/detail?id=31) in Firefox 3.6.12 and Opera 10.63+
+ * [Page loading behavior](http://code.google.com/p/jquery-jsonp/issues/detail?id=31) in Firefox 3.6.12+ and Opera 10.63+
+ * [Multiple JSONP polling request](http://code.google.com/p/jquery-jsonp/issues/detail?id=34) - browser specific issue
 
 
 TODO
