@@ -110,7 +110,7 @@ Known limitations
 ------------
 
  * [Page loading behavior](http://code.google.com/p/jquery-jsonp/issues/detail?id=31) in Firefox 3.6.12+ and Opera 10.63+
- * [Multiple JSONP polling request](http://code.google.com/p/jquery-jsonp/issues/detail?id=34) - browser specific issue
+ * [Multiple JSONP polling requests](http://code.google.com/p/jquery-jsonp/issues/detail?id=34) - browser specific limitation occuring when certain number of (long polling) tabs within browser context is opened
 
 
 TODO
