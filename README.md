@@ -107,14 +107,19 @@ Successfuly tested with 50 simultaneously connected clients through various brow
 
 
 Known limitations
-------------
+-----------------
 
  * [Page loading behavior](http://code.google.com/p/jquery-jsonp/issues/detail?id=31) in Firefox 3.6.12+ and Opera 10.63+
  * [Multiple JSONP polling requests](http://code.google.com/p/jquery-jsonp/issues/detail?id=34) - browser specific limitation occuring when certain number of (long polling) tabs within browser context is opened
+
+
+Architecture
+------------
+
+[Tales of the minotaur or long polling with node.js](http://tomi.developmententity.sk/Blog/Post/7) - blog post about certain parts of long poll server architecture.
 
 
 TODO
 ----
 
  * Message sanitation
- * Documentation about architecture
