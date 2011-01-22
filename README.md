@@ -12,7 +12,7 @@ Compatibility
 
 **Server side:**
 
- * tested with node.js v0.2.5 and v0.3.0
+ * tested with node.js v0.2.5, v0.2.6 and v0.3.0
 
 **Client side (tested browsers):**
 

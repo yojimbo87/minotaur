@@ -19,7 +19,7 @@ function Minitaur() {
     };
     
     var poll = function() {
-        pollHandler = $.jsonp({
+        $.jsonp({
             url: "/poll",
             timeout: 30000,
             data: {"client": currentClientID, "cmd": "poll"},
