@@ -22,7 +22,7 @@ function Minitaur() {
         $.jsonp({
             url: "/poll",
             timeout: 30000,
-            data: {"client": currentClientID, "cmd": "poll"},
+            data: {"client": currentClientID},
             success: function(data) {
                 if(data.messages) {
                     $.each(data.messages, function (index, value) {
@@ -42,7 +42,7 @@ function Minitaur() {
         if((status == "connected") && (data != "")) {
             $.jsonp({
                 url: "/msg",
-                data: {"cmd": "msg", "content": data.replace(/</g, "&lt;").replace(/>/g, "&gt;")}
+                data: {"content": data.replace(/</g, "&lt;").replace(/>/g, "&gt;")}
             });
         }
     };
