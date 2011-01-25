@@ -43,7 +43,7 @@ function sendRandomMessage() {
         randomNumber = Math.floor(Math.random()*11) * 1000 + 1000;
         randomStringLength = Math.floor(Math.random()*23) + 3;
         
-        mini.send(generateString(randomStringLength))
+        mini.send({"cmd": "msg", "content": generateString(randomStringLength)})
         
         sendRandomMessage();
     }, randomTimeout);

@@ -42,7 +42,7 @@ function Minitaur() {
         if((status == "connected") && (data != "")) {
             $.jsonp({
                 url: "/msg",
-                data: {"content": data.replace(/</g, "&lt;").replace(/>/g, "&gt;")}
+                data: data}
             });
         }
     };

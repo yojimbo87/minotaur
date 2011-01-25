@@ -45,7 +45,9 @@ minotaur.on("connect", function(session) {
     minotaur.broadcast({cmd: "in", id: session.sid}, session.sid);
     
     session.on("message", function(message) {
-        minotaur.broadcast({cmd: "msg", id: session.sid, content: message});
+        if(message && message.cmd && msg.content) {
+            minotaur.broadcast({cmd: message.cmd, id: session.sid, content: msg.content});
+        }
     });
     
     session.on("disconnect", function(message) {

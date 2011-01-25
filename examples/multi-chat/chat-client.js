@@ -44,7 +44,7 @@ $(document).ready(function() {
 });
 
 function sendMessage() {
-    mini.send($("#text-send").val());
+    mini.send({"cmd": "msg", "content": $("#text-send").val()});
     
     $("#text-send").val("");
 }
