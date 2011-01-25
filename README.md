@@ -122,4 +122,5 @@ Architecture
 TODO
 ----
 
- * Message sanitation
+ * API documentation
+ * Message sanitation 
