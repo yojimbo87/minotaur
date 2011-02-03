@@ -123,4 +123,3 @@ TODO
 ----
 
  * API documentation
- * Message sanitation 
