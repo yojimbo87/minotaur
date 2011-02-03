@@ -22,11 +22,11 @@ $(document).ready(function() {
             default:
                 break;
         }
-        $("#area-chat").scrollTop($("#area-chat").height());
+        $("#area-chat").scrollTop($("#area-chat")[0].scrollHeight);
     });
     mini.on("disconnect", function() {
         $("#area-chat").append("<div class=\"msg\">Disconnected, reconnecting ...</div>");
-        $("#area-chat").scrollTop($("#area-chat").height());
+        $("#area-chat").scrollTop($("#area-chat")[0].scrollHeight);
         setTimeout("mini.connect()", 10000);
     });
     
