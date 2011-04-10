@@ -40,4 +40,22 @@ httpServer.listen(PORT);
 util.log("Listening on port " + PORT);
 
 var minotaur = new Minotaur(httpServer);
+
+minotaur.on("connect", function(session) {
+    //minotaur.broadcast({cmd: "in", id: session.sid}, session.sid);
+	util.log("connected in " + session.sid);
+    
+    session.on("message", function(message) {
+        /*if(message && message.cmd && message.content) {
+            minotaur.broadcast({cmd: message.cmd, id: session.sid, content: message.content});
+        }*/
+		util.log("got msg " + session.sid + ": " + message);
+    });
+    
+    session.on("disconnect", function(message) {
+        //minotaur.broadcast({cmd: "out", id: session.sid});
+		util.log("disconnected " + session.sid);
+    });
+});
+
 minotaur.init();

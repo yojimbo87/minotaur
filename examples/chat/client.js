@@ -10,9 +10,7 @@ $(document).ready(function () {
     });
     
     minitaur.on("message", function(data) {
-		if(data && data.cmd) {
-			debug("on message " + data.cmd);
-		}
+		debug("on message " + data.cmd);
     });
 	
     minitaur.on("disconnect", function() {
