@@ -6,7 +6,24 @@
         <meta name="robots" content="noindex,nofollow" />
     </head>
     <body>
-        <div id="debug"></div>
+        <div id="container">
+			<div id="area-chat">
+			</div>
+			<div id="area-input">
+				<input type="text" autocomplete="off" id="text-send" />
+				<input type="submit" value="Send" id="button-send" />
+			</div>
+			<div id="debug">
+			</div>
+		</div>
+		
+		<style>
+			body { background: white; font-family: Verdana, Arial; font-size: 12px; margin: 20px 0 0 0; padding: 0; }
+			#container { margin: 0px auto; position: relative; width: 990px; }
+			#area-chat { border-top: 1px solid black; border-bottom: 1px solid black; height: 250px; margin: 16px 0 16px 0; overflow: auto; padding: 8px 0 8px 0; width: 100%; }
+			#area-input { width: 100%; }
+			.msg { padding: 4px 0; width: 100%; }
+		</style>
 		
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js" type="text/javascript"></script>
 		<script src="minitaur.js" type="text/javascript"></script>
