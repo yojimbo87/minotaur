@@ -42,7 +42,7 @@ util.log("Listening on port " + PORT);
 var minotaur = new Minotaur(httpServer);
 
 minotaur.on("connect", function(session) {
-    //minotaur.broadcast({cmd: "in", sid: session.sid}, session.sid);
+    minotaur.broadcast({cmd: "in", sid: session.sid}, session.sid);
 	//util.log("connected in " + session.sid);
     
     session.on("message", function(message) {
