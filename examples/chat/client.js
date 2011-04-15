@@ -10,6 +10,9 @@ function sendMessage() {
     textSend.val("");
 }
 
+/*var iteration = 1,
+	previousIteration = 2;*/
+
 $(document).ready(function () {
     debug("Ready<br />");
 	
@@ -39,7 +42,23 @@ $(document).ready(function () {
 				);
                 break;
             case "msg":
-                chatArea.append(
+				/*var result = parseInt(previousIteration, 10) + 1;
+				if(result == data.iteration) {
+					chatArea.append(
+						"<div class=\"msg\"><b>" + 
+						data.sid + 
+						"</b>: " + data.iteration + " - " + data.content + "</div>"
+					);
+				} else {
+					chatArea.append(
+						"<div class=\"msg\"><b>" + 
+						data.sid + 
+						"</b>: <i>!!!!!!!!!!!!!!!!!! " + data.iteration + " - " + data.content + " !!!!!!!!!!!!</i></div>"
+					);
+				}
+				previousIteration = data.iteration;*/
+				
+				chatArea.append(
 					"<div class=\"msg\"><b>" + 
 					data.sid + 
 					"</b>: " + data.content + "</div>"
@@ -74,5 +93,31 @@ $(document).ready(function () {
             sendMessage();
         }
     });
+	
+	/*$("#button-generate").click(function() {
+        iterate();
+    });*/
 });
 
+/*function iterate() {
+	var randomTimeout = Math.floor(Math.random()*11) * 1000 + 1000,
+		randomStringLength = Math.floor(Math.random()*20) + 3;
+	
+	setTimeout(function() {
+		iteration++;
+		minitaur.send({"cmd": "msg", "content": generateString(randomStringLength), "iteration": iteration});
+		
+		iterate();
+	}, randomTimeout);
+}
+
+function generateString(sLength)
+{
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+    for( var i=0; i < sLength; i++ )
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+    return text;
+}*/

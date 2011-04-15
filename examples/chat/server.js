@@ -50,7 +50,8 @@ minotaur.on("connect", function(session) {
             minotaur.broadcast({
 				cmd: message.cmd, 
 				sid: session.sid, 
-				content: message.content
+				content: message.content,
+				iteration: message.iteration
 			});
         }
 		//util.log("got msg " + session.sid + ": " + message);
