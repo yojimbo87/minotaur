@@ -94,9 +94,22 @@ $(document).ready(function () {
         }
     });
 	
-	/*$("#button-generate").click(function() {
-        iterate();
-    });*/
+	$("#button-generate").click(function() {
+        //iterate();
+		minitaur.disconnect();
+    });
+	
+	//$(window).unload(function() {
+	window.onbeforeunload = function() {
+		//alert("called unload bef");
+		//minitaur.disconnect();
+		//alert("called unload aft");
+		localStorage.setItem('b',generateString(20));
+	};
+	
+	$(window).bind("storage", function(e) {
+				alert('storage event' + e.key);
+			});
 });
 
 /*function iterate() {
@@ -109,7 +122,7 @@ $(document).ready(function () {
 		
 		iterate();
 	}, randomTimeout);
-}
+}*/
 
 function generateString(sLength)
 {
@@ -120,4 +133,4 @@ function generateString(sLength)
         text += possible.charAt(Math.floor(Math.random() * possible.length));
 
     return text;
-}*/
+}
