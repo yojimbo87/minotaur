@@ -12,7 +12,7 @@ Dependencies
 **Server side (all node.js modules are included):**
 
  * [node.js](http://nodejs.org/)
- * [node-uuid](https://github.com/broofa/node-uuid) node.js module for generating session IDs
+ * [node-uuid](https://github.com/broofa/node-uuid) node.js module for generating unique session and client IDs
  * [cookies](https://github.com/jed/cookies) node.js module for cookies manipulation
  * [keygrip](https://github.com/jed/keygrip) node.js module for signing cookies
 
@@ -23,7 +23,6 @@ Dependencies
 TODO
 ----
 
- * Rewrite old server side long poll architecture
- * Rewrite old client
- * Use jQuery native Ajax functions with JSONP transport
- * Overcome browser parallel connections limit with either unique poll domain or HTML5 storage
+ * Pass options object to minotaur
+ * Poll (sub)domain assignment through options object
+ * One-to-one chat
