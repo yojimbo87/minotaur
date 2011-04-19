@@ -2,19 +2,6 @@ function debug(message) {
 	$("#debug").append(message + "<br />");
 }
 
-// generate random string with given length
-function generateString(sLength) {
-    var text = "",
-		possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",
-		i;
-
-    for(i=0; i < sLength; i++) {
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
-	}
-
-    return text;
-}
-
 function sendMessage() {
 	var textSend = $("#text-send");
 
@@ -22,6 +9,9 @@ function sendMessage() {
     
     textSend.val("");
 }
+
+/*var iteration = 1,
+	previousIteration = 2;*/
 
 $(document).ready(function () {
     debug("Ready<br />");
@@ -52,6 +42,22 @@ $(document).ready(function () {
 				);
                 break;
             case "msg":
+				/*var result = parseInt(previousIteration, 10) + 1;
+				if(result == data.iteration) {
+					chatArea.append(
+						"<div class=\"msg\"><b>" + 
+						data.sid + 
+						"</b>: " + data.iteration + " - " + data.content + "</div>"
+					);
+				} else {
+					chatArea.append(
+						"<div class=\"msg\"><b>" + 
+						data.sid + 
+						"</b>: <i>!!!!!!!!!!!!!!!!!! " + data.iteration + " - " + data.content + " !!!!!!!!!!!!</i></div>"
+					);
+				}
+				previousIteration = data.iteration;*/
+				
 				chatArea.append(
 					"<div class=\"msg\"><b>" + 
 					data.sid + 
@@ -74,7 +80,7 @@ $(document).ready(function () {
         //setTimeout(minitaur.connect, 10000);
     });
 	
-	minitaur.init();
+	minitaur.connect();
 	
 	// bind button click event for sending message
     $("#button-send").click(function() {
@@ -88,20 +94,43 @@ $(document).ready(function () {
         }
     });
 	
-	// handle disconnect button click
-	$("#button-disconnect").click(function() {
-		//minitaur.disconnect();
-		localStorage.setItem("messages", "omg");
+	$("#button-generate").click(function() {
+        //iterate();
+		minitaur.disconnect();
     });
 	
-	// handle unloading of website
+	//$(window).unload(function() {
 	window.onbeforeunload = function() {
-		minitaur.processUnload();
+		//alert("called unload bef");
+		//minitaur.disconnect();
+		//alert("called unload aft");
+		localStorage.setItem('b',generateString(20));
 	};
 	
-	$(window).bind("storage", function(event) {
-		var storageEvent = event.originalEvent;
-
-		minitaur.processStorageEvent(storageEvent.key, storageEvent.newValue);
-	});
+	$(window).bind("storage", function(e) {
+				alert('storage event' + e.key);
+			});
 });
+
+/*function iterate() {
+	var randomTimeout = Math.floor(Math.random()*11) * 1000 + 1000,
+		randomStringLength = Math.floor(Math.random()*20) + 3;
+	
+	setTimeout(function() {
+		iteration++;
+		minitaur.send({"cmd": "msg", "content": generateString(randomStringLength), "iteration": iteration});
+		
+		iterate();
+	}, randomTimeout);
+}*/
+
+function generateString(sLength)
+{
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+    for( var i=0; i < sLength; i++ )
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+    return text;
+}
