@@ -10,8 +10,8 @@ function sendMessage() {
     textSend.val("");
 }
 
-/*var iteration = 1,
-	previousIteration = 2;*/
+var iteration = 1,
+	previousIteration = 2;
 
 $(document).ready(function () {
     debug("Ready<br />");
@@ -42,7 +42,7 @@ $(document).ready(function () {
 				);
                 break;
             case "msg":
-				/*var result = parseInt(previousIteration, 10) + 1;
+				var result = parseInt(previousIteration, 10) + 1;
 				if(result == data.iteration) {
 					chatArea.append(
 						"<div class=\"msg\"><b>" + 
@@ -56,13 +56,7 @@ $(document).ready(function () {
 						"</b>: <i>!!!!!!!!!!!!!!!!!! " + data.iteration + " - " + data.content + " !!!!!!!!!!!!</i></div>"
 					);
 				}
-				previousIteration = data.iteration;*/
-				
-				chatArea.append(
-					"<div class=\"msg\"><b>" + 
-					data.sid + 
-					"</b>: " + data.content + "</div>"
-				);
+				previousIteration = data.iteration;
                 break;
             default:
                 break;
@@ -95,24 +89,11 @@ $(document).ready(function () {
     });
 	
 	$("#button-generate").click(function() {
-        //iterate();
-		minitaur.disconnect();
+        iterate();
     });
-	
-	//$(window).unload(function() {
-	window.onbeforeunload = function() {
-		//alert("called unload bef");
-		//minitaur.disconnect();
-		//alert("called unload aft");
-		localStorage.setItem('b',generateString(20));
-	};
-	
-	$(window).bind("storage", function(e) {
-				alert('storage event' + e.key);
-			});
 });
 
-/*function iterate() {
+function iterate() {
 	var randomTimeout = Math.floor(Math.random()*11) * 1000 + 1000,
 		randomStringLength = Math.floor(Math.random()*20) + 3;
 	
@@ -122,7 +103,7 @@ $(document).ready(function () {
 		
 		iterate();
 	}, randomTimeout);
-}*/
+}
 
 function generateString(sLength)
 {

@@ -43,8 +43,7 @@ var minotaur = new Minotaur(httpServer);
 
 minotaur.on("connect", function(session) {
     minotaur.broadcast({cmd: "in", sid: session.sid}, session.sid);
-	//util.log("connected in " + session.sid);
-    
+
     session.on("message", function(message) {
         if(message && message.cmd && message.content) {
             minotaur.broadcast({
@@ -54,12 +53,10 @@ minotaur.on("connect", function(session) {
 				iteration: message.iteration
 			});
         }
-		//util.log("got msg " + session.sid + ": " + message);
     });
     
     session.on("disconnect", function(message) {
         minotaur.broadcast({cmd: "out", sid: session.sid});
-		//util.log("disconnected " + session.sid);
     });
 });
 
