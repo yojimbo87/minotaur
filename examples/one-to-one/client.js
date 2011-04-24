@@ -11,9 +11,17 @@ function sendMessage() {
 $(document).ready(function () {
     debug("Ready<br />");
 	
+	cint.init(
+		$("#list-online"),
+		$("#list-actors"),
+		$("#active-actor"),
+		$("#history"),
+		$("#text-send"),
+		$("#button-send")
+	);
+	
 	minitaur.on("connect", function() {
 		/*var chatArea = $("#area-chat");
-	
         chatArea.append("<div class=\"msg\">Connected ...</div>");
         chatArea.scrollTop(chatArea[0].scrollHeight);*/
     });
@@ -23,18 +31,10 @@ $(document).ready(function () {
 	
 		switch(data.cmd) {
             case "in":
-                /*chatArea.append(
-					"<div class=\"msg\">" + 
-					data.sid + 
-					" connected!</div>"
-				);*/
+				cint.attachOnlineUser({id: data.sid});
                 break;
             case "out":
-                /*chatArea.append(
-					"<div class=\"msg\">" + 
-					data.sid + 
-					" disconnected!</div>"
-				);*/
+				cint.detachOnlineUser(data.sid);
                 break;
             case "msg":
 				/*chatArea.append(

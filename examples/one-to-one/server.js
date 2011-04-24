@@ -3,6 +3,7 @@ var util = require("util"),
 	 url = require("url"),
 	  qs = require("querystring"),
 	  fs = require("fs"),
+Supervisor = require("./supervisor"),
 Minotaur = require("../../lib/server/minotaur"),
     PORT = 8080;
 
@@ -24,6 +25,7 @@ var httpServer = http.createServer(function(req, res) {
             });
 			break;
         case "/jquery-1.5.2.min.js":
+		case "/cint.js":
 		case "/client.js":
             fs.readFile("./" + path, function(err, data){
                 res.writeHead(200, {"Content-Type": "text/javascript"});
@@ -46,23 +48,42 @@ var httpServer = http.createServer(function(req, res) {
 httpServer.listen(PORT);
 util.log("Listening on port " + PORT);
 
+var supervisor = new Supervisor();
 var minotaur = new Minotaur(httpServer);
 
 minotaur.on("connect", function(session) {
+	supervisor.attachUser({ hash: session.sid });
+	// get me the list of online users
+	supervisor.forEachUser(function(user) {
+		if(user.hash !== session.sid) {
+			minotaur.send(session.sid, {cmd: "in", sid: user.hash})
+		}
+	});
+	// tell everyone that I'm online
     minotaur.broadcast({cmd: "in", sid: session.sid}, session.sid);
-
+	
+	session.on("client", function() {
+		// get me the list of online users
+		supervisor.forEachUser(function(user) {
+			if(user.hash !== session.sid) {
+				minotaur.send(session.sid, {cmd: "in", sid: user.hash})
+			}
+		});
+	});
+	
     session.on("message", function(message) {
         if(message && message.cmd && message.content) {
             minotaur.broadcast({
 				cmd: message.cmd, 
 				sid: session.sid, 
-				content: message.content,
-				iteration: message.iteration
+				content: message.content
 			});
         }
     });
     
     session.on("disconnect", function(message) {
+		supervisor.detachUser(session.sid);
+		// tell everyone that I'm offline
         minotaur.broadcast({cmd: "out", sid: session.sid});
     });
 });
