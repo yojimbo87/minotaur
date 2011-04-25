@@ -72,12 +72,17 @@ minotaur.on("connect", function(session) {
 	});
 	
     session.on("message", function(message) {
-        if(message && message.cmd && message.content) {
-            minotaur.broadcast({
-				cmd: message.cmd, 
-				sid: session.sid, 
-				content: message.content
-			});
+        if(message && message.cmd && message.dest && message.content) {
+            // send message to receiver
+			minotaur.send(
+				message.dest,
+				{cmd: "msg", source: session.sid, content: message.content}
+			);
+			// send message to sender
+			minotaur.send(
+				session.sid,
+				{cmd: "msg", source: "me", content: message.content}
+			);
         }
     });
     

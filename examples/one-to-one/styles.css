@@ -11,12 +11,18 @@ ul#list-online li:hover { color: red; cursor: pointer; }
 #area-active { /*background: green;*/ border-right: 1px solid black; border-left: 1px solid black; float: left; width: 488px; }
 #area-history { height: 400px; padding: 16px; }
 #area-controls {}
+#history { height: 350px; overflow: auto; width: 100%; }
 #text-send { width: 400px; }
 
 #area-actors { /*background: yellow;*/ float: right; width: 250px; }
 ul#list-actors {}
+ul#list-actors li { color: black; }
+ul#list-actors li.active { color: red; }
 ul#list-actors li:hover { color: blue; cursor: pointer; }
 
+
+.msg { padding: 4px 0; width: 100%; }
+.msg-me { background: #f3f3f3; padding: 4px 0; width: 100%; }
+
 /*#area-chat { border-top: 1px solid black; border-bottom: 1px solid black; height: 250px; margin: 16px 0 16px 0; overflow: auto; padding: 8px 0 8px 0; width: 100%; }
-#area-input { width: 100%; }
-.msg { padding: 4px 0; width: 100%; }*/
+#area-input { width: 100%; }*/
