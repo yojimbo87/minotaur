@@ -26,6 +26,8 @@ $(document).ready(function () {
         chatArea.append("<div class=\"msg\">Connected ...</div>");
         chatArea.scrollTop(chatArea[0].scrollHeight);*/
 		debug("connected");
+		
+		minitaur.send({cmd: "getName"});
     });
     
     minitaur.on("message", function(data) {
@@ -33,18 +35,18 @@ $(document).ready(function () {
 	
 		switch(data.cmd) {
             case "in":
-				cint.attachOnlineUser({id: data.sid});
+				cint.attachOnlineUser(data.id, data.name);
                 break;
             case "out":
-				cint.detachOnlineUser(data.sid);
+				cint.detachOnlineUser(data.id);
                 break;
+			case "getName":
+				$("#text-name").val(data.name);
+				break;
+			case "nameChange":
+				cint.receiveMessage(data);
+				break;
             case "msg":
-				/*chatArea.append(
-					"<div class=\"msg\"><b>" + 
-					data.sid + 
-					"</b>: " + data.content + "</div>"
-				);*/
-				//debug(data.source + " " + data.content);
 				cint.receiveMessage(data);
                 break;
             default:
@@ -65,6 +67,10 @@ $(document).ready(function () {
     });
 	
 	minitaur.connect();
+	
+	$("#button-name").click(function() {
+		minitaur.send({cmd: "setName", name: $("#text-name").val()});
+	});
 });
 
 function generateString(sLength)

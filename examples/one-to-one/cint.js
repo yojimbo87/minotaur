@@ -37,24 +37,14 @@ var cint = (function(undefined) {
 		elementSubmit = submitElement;
 		
 		$("li", elementOnline).live("click", function() {
-			var actor = {
-				id: this.id.substring(2),
-				history: []
-			};
-			
-			attachActor(actor);
-			//if(actor.id !== activeID) {
-				activateActor(actor.id);
-			//}
+			var actorID = this.id.substring(2);
+			attachActor(actorID, $(this).text());
+			activateActor(actorID);
 		});
 		
 		$("li", elementActors).live("click", function() {
 			var actorID = this.id.substring(2);
-				//activeID = elementActiveActor.val();
-			
-			//if(actorID !== activeID) {
-				activateActor(actorID);
-			//}
+			activateActor(actorID);
 		});
 		
 		// bind button click event for sending message
@@ -78,12 +68,17 @@ var cint = (function(undefined) {
   
   .
 ------------------------------------------------------------------------------*/
-	function attachOnlineUser(user) {
-		if(!users[user.id]) {
+	function attachOnlineUser(userID, userName) {
+		if(!users[userID]) {
+			var user = {
+				id: userID,
+				name: userName
+			};
+		
 			users[user.id] = user;
 			usersCount++;
 		
-			$("<li id=\"o-" + user.id + "\">" +  user.id + "</li>").appendTo(elementOnline);
+			$("<li id=\"o-" + user.id + "\">" +  user.name + "</li>").appendTo(elementOnline);
 			debug("Attached online " + user.id);
 		}
 	}
@@ -96,12 +91,12 @@ var cint = (function(undefined) {
   
   .
 ------------------------------------------------------------------------------*/
-	function detachOnlineUser(id) {
-		if(users[id]) {
+	function detachOnlineUser(userID) {
+		if(users[userID]) {
 			usersCount--;
 		
-			$("#o-" + id).remove();
-			debug("Detached online " + id);
+			$("#o-" + userID).remove();
+			debug("Detached online " + userID);
 		}
 	}
 	
@@ -113,12 +108,18 @@ var cint = (function(undefined) {
   
   .
 ------------------------------------------------------------------------------*/
-	function attachActor(actor) {
-		if(!actors[actor.id]) {
+	function attachActor(actorID, actorName) {
+		if(!actors[actorID]) {
+			var actor = {
+				id: actorID,
+				name: actorName,
+				history: []
+			};
+		
 			actors[actor.id] = actor;
 			actorsCount++;
 			
-			$("<li id=\"a-" + actor.id + "\">" +  actor.id + "</li>").appendTo(elementActors);
+			$("<li id=\"a-" + actor.id + "\">" +  actor.name + "</li>").appendTo(elementActors);
 			
 			debug("Attached actor " + actor.id);
 		}
@@ -132,12 +133,12 @@ var cint = (function(undefined) {
   
   .
 ------------------------------------------------------------------------------*/
-	function detachActor(id) {
-		if(actors[id]) {
+	function detachActor(actorID) {
+		if(actors[actorID]) {
 			actorsCount--;
 		
-			$("#a-" + id).remove();
-			debug("Attached actor " + id);
+			$("#a-" + actorID).remove();
+			debug("Attached actor " + actorID);
 		}
 	}
 	
@@ -149,9 +150,9 @@ var cint = (function(undefined) {
   
   .
 ------------------------------------------------------------------------------*/
-	function addActorHistory(id, message) {
-		if(actors[id]) {
-			actors[id].history.push(message);
+	function addActorHistory(actorID, message) {
+		if(actors[actorID]) {
+			actors[actorID].history.push(message);
 		}
 	}
 	
@@ -163,24 +164,24 @@ var cint = (function(undefined) {
   
   .
 ------------------------------------------------------------------------------*/
-	function activateActor(id) {
+	function activateActor(actorID) {
 		var i, len,
 			history,
 			messages = "",
 			activeID = elementActiveActor.val();
 		
-		if(activeID !== id) {
-			if(actors[id]) {
-				elementActiveActor.val(actors[id].id);
-				elementActorTitle.html("Chatting with <b>" + actors[id].id + "</b>");
+		if(activeID !== actorID) {
+			if(actors[actorID]) {
+				elementActiveActor.val(actors[actorID].id);
+				elementActorTitle.html(actors[actorID].name);
 				
-				var elementActor = $("#a-" + id);
+				var elementActor = $("#a-" + actorID);
 				if(elementActor.hasClass("active")) {
 					elementActor.removeClass("active");
 				}
 				
 				elementHistory.text("");
-				history = actors[id].history;
+				history = actors[actorID].history;
 
 				if(history.length > 0) {
 					for(i = 0, len = history.length; i < len; i++) {
@@ -188,10 +189,10 @@ var cint = (function(undefined) {
 					}
 
 					elementHistory.html(messages);
-					$("#history").scrollTop($("#history")[0].scrollHeight);
+					elementHistory.scrollTop(elementHistory[0].scrollHeight);
 				}
 				
-				debug("Actor activated " + actors[id].id);
+				debug("Actor activated " + actors[actorID].id);
 			}
 		}
 	}
@@ -207,7 +208,7 @@ var cint = (function(undefined) {
 	function sendMessage() {
 		var activeID = elementActiveActor.val();
 	
-		if((elementInput.val() !== "") && (activeID !== "0")) {
+		if((elementInput.val() !== "empty") && (activeID !== "0")) {
 			minitaur.send({
 				"cmd": "msg", 
 				"dest": activeID, 
@@ -228,26 +229,56 @@ var cint = (function(undefined) {
 	function receiveMessage(data) {
 		var activeID = elementActiveActor.val();
 	
-		if(data && data.source && data.content) {
-			if(data.source === activeID) {
-				var message = "<div class=\"msg\">" + data.content + "</div>";
-				elementHistory.append(message);
-				$("#history").scrollTop($("#history")[0].scrollHeight);
-				addActorHistory(activeID, message);
-			} else if(data.source === "me") {
-				var message = "<div class=\"msg-me\">" + data.content + "</div>";
-				elementHistory.append(message);
-				$("#history").scrollTop($("#history")[0].scrollHeight);
-				addActorHistory(activeID, message);
-			} else {
-				if($("#a-" + data.source).length === 0) {
-					attachActor({id: data.source, history: []});
-				}
+		if(data) {
+			switch(data.cmd) {
+				case "msg":
+					if(data.source === activeID) {
+						var message = "<div class=\"msg\">" + data.content + "</div>";
+						elementHistory.append(message);
+						$("#history").scrollTop($("#history")[0].scrollHeight);
+						addActorHistory(activeID, message);
+					} else if(data.source === "me") {
+						var message = "<div class=\"msg-me\">" + data.content + "</div>";
+						elementHistory.append(message);
+						$("#history").scrollTop($("#history")[0].scrollHeight);
+						addActorHistory(activeID, message);
+					} else {
+						if($("#a-" + data.source).length === 0) {
+							attachActor(data.source, $("#o-" + data.source).text());
+						}
+						
+						var message = "<div class=\"msg\">" + data.content + "</div>";
+						addActorHistory(data.source, message);
+					
+						$("#a-" + data.source).addClass("active");
+					}
+					break;
+				case "nameChange":
+					var onlineUserElement = $("#o-" + data.id),
+						actorElement = $("#a-" + data.id);
+					
+					if(users[data.id]) {
+						users[data.id].name = data.name;
+					}
+					
+					if(actors[data.id]) {
+						actors[data.id].name = data.name;
+					}
 				
-				var message = "<div class=\"msg\">" + data.content + "</div>";
-				addActorHistory(data.source, message);
-			
-				$("#a-" + data.source).addClass("active");
+					if(onlineUserElement.length) {
+						onlineUserElement.text(data.name);
+					}
+					
+					if(actorElement.length) {
+						actorElement.text(data.name);
+					}
+					
+					if(elementActiveActor.val() === data.id) {
+						elementActorTitle.html(data.name);
+					}
+					break;
+				default:
+					break;
 			}
 		}
 	}

@@ -8,14 +8,19 @@
     </head>
     <body>
         <div id="container">
+			<div id="area-name">
+				<b>My name is:</b> 
+				<input type="text" autocomplete="off" id="text-name" style="width: 300px;" />
+				<input type="submit" value="Set my name" id="button-name" />
+			</div>
 			<div id="area-chat">
 				<div id="area-online">
-					<b>Online users</b><br />
+					<div class="title">All users</div>
 					<ul id="list-online"></ul>
 				</div>
 				<div id="area-active">
 					<div id="area-history">
-						<div id="active-actor"></div>
+						<div id="active-actor">empty</div>
 						<input type="hidden" value="0" id="hidden-actor" />
 						<div id="history"></div>
 					</div>
@@ -25,7 +30,7 @@
 					</div>
 				</div>
 				<div id="area-actors">
-					<b>Actors</b><br />
+					<div class="title">Chatters</div>
 					<ul id="list-actors"></ul>
 				</div>
 			</div>

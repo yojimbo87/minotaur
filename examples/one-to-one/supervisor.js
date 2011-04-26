@@ -15,7 +15,11 @@ var Supervisor = module.exports = function Supervisor() {
 	this._usersCount = 0;
 };
 
-Supervisor.prototype.attachUser = function(user) {
+Supervisor.prototype.attachUser = function(userHash, userName) {
+	var user = {
+		hash: userHash,
+		name: userName
+	};
     this._users[user.hash] = user;
     this._usersCount++;
 };
@@ -23,6 +27,10 @@ Supervisor.prototype.attachUser = function(user) {
 Supervisor.prototype.detachUser = function(userHash) {
     delete this._users[userHash];
     this._usersCount--;
+};
+
+Supervisor.prototype.getUser = function(userHash) {
+    return this._users[userHash];
 };
 
 Supervisor.prototype.forEachUser = function(callback) {

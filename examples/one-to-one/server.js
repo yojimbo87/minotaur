@@ -52,37 +52,76 @@ var supervisor = new Supervisor();
 var minotaur = new Minotaur(httpServer);
 
 minotaur.on("connect", function(session) {
-	supervisor.attachUser({ hash: session.sid });
+	supervisor.attachUser(session.sid, session.sid);
 	// get me the list of online users
 	supervisor.forEachUser(function(user) {
 		if(user.hash !== session.sid) {
-			minotaur.send(session.sid, {cmd: "in", sid: user.hash})
+			minotaur.send(
+				session.sid, 
+				{cmd: "in", id: user.hash, name: user.name}
+			);
 		}
 	});
 	// tell everyone that I'm online
-    minotaur.broadcast({cmd: "in", sid: session.sid}, session.sid);
+    minotaur.broadcast(
+		{cmd: "in", id: session.sid, name: session.sid}, 
+		session.sid
+	);
 	
 	session.on("client", function() {
 		// get me the list of online users
 		supervisor.forEachUser(function(user) {
 			if(user.hash !== session.sid) {
-				minotaur.send(session.sid, {cmd: "in", sid: user.hash})
+				minotaur.send(
+					session.sid, 
+					{cmd: "in", id: user.hash, name: user.name}
+				);
 			}
 		});
 	});
 	
     session.on("message", function(message) {
-        if(message && message.cmd && message.dest && message.content) {
-            // send message to receiver
-			minotaur.send(
-				message.dest,
-				{cmd: "msg", source: session.sid, content: message.content}
-			);
-			// send message to sender
-			minotaur.send(
-				session.sid,
-				{cmd: "msg", source: "me", content: message.content}
-			);
+        if(message && message.cmd) {
+			switch(message.cmd) {
+				case "msg":
+					if(message.dest && message.content) {
+						// send message to receiver
+						minotaur.send(
+							message.dest,
+							{cmd: "msg", source: session.sid, content: message.content}
+						);
+						// send message to sender
+						minotaur.send(
+							session.sid,
+							{cmd: "msg", source: "me", content: message.content}
+						);
+					}
+					break;
+				case "getName":
+					minotaur.send(
+						session.sid, 
+						{
+							cmd: "getName", 
+							name: supervisor.getUser(session.sid).name
+						}
+					);
+					break;
+				case "setName":
+					supervisor.getUser(session.sid).name = message.name;
+					supervisor.forEachUser(function(user) {
+						minotaur.broadcast(
+							{
+								cmd: "nameChange", 
+								id: session.sid,
+								name: message.name
+							}, 
+							session.sid
+						);
+					});
+					break;
+				default:
+					break;
+			}
         }
     });
     
