@@ -79,6 +79,8 @@ var cint = (function(undefined) {
 			usersCount++;
 		
 			$("<li id=\"o-" + user.id + "\">" +  user.name + "</li>").appendTo(elementOnline);
+			$("#o-" + user.id).addClass("online");
+			
 			debug("Attached online " + user.id);
 		}
 	}
@@ -96,6 +98,9 @@ var cint = (function(undefined) {
 			usersCount--;
 		
 			$("#o-" + userID).remove();
+			$("#a-" + userID).removeClass("online");
+			$("#a-" + userID).addClass("offline");
+			
 			debug("Detached online " + userID);
 		}
 	}
@@ -120,8 +125,11 @@ var cint = (function(undefined) {
 			actorsCount++;
 			
 			$("<li id=\"a-" + actor.id + "\">" +  actor.name + "</li>").appendTo(elementActors);
+			$("#a-" + actor.id).addClass("online");
 			
 			debug("Attached actor " + actor.id);
+		} else {
+			$("#a-" + actorID).addClass("online");
 		}
 	}
 	
@@ -175,9 +183,15 @@ var cint = (function(undefined) {
 				elementActiveActor.val(actors[actorID].id);
 				elementActorTitle.html(actors[actorID].name);
 				
+				$("li", elementActors).each(function(index) {
+					$(this).removeClass("active");
+				});
+				
 				var elementActor = $("#a-" + actorID);
-				if(elementActor.hasClass("active")) {
-					elementActor.removeClass("active");
+				elementActor.addClass("active");
+				
+				if(elementActor.hasClass("unread")) {
+					elementActor.removeClass("unread");
 				}
 				
 				elementHistory.text("");
@@ -227,30 +241,39 @@ var cint = (function(undefined) {
   .
 ------------------------------------------------------------------------------*/
 	function receiveMessage(data) {
-		var activeID = elementActiveActor.val();
+		var message,
+			activeID = elementActiveActor.val();
 	
 		if(data) {
 			switch(data.cmd) {
 				case "msg":
 					if(data.source === activeID) {
-						var message = "<div class=\"msg\">" + data.content + "</div>";
+						if(data.me) {
+							message = "<div class=\"msg-me\">" + data.content + "</div>";
+						} else {
+							message = "<div class=\"msg\">" + data.content + "</div>";
+						}
 						elementHistory.append(message);
 						$("#history").scrollTop($("#history")[0].scrollHeight);
-						addActorHistory(activeID, message);
-					} else if(data.source === "me") {
-						var message = "<div class=\"msg-me\">" + data.content + "</div>";
+						addActorHistory(data.source, message);
+					/*} else if(data.me) {
+						
 						elementHistory.append(message);
 						$("#history").scrollTop($("#history")[0].scrollHeight);
-						addActorHistory(activeID, message);
+						addActorHistory(data.source, message);*/
 					} else {
 						if($("#a-" + data.source).length === 0) {
 							attachActor(data.source, $("#o-" + data.source).text());
 						}
 						
-						var message = "<div class=\"msg\">" + data.content + "</div>";
+						if(data.me) {
+							message = "<div class=\"msg-me\">" + data.content + "</div>";
+						} else {
+							message = "<div class=\"msg\">" + data.content + "</div>";
+						}
 						addActorHistory(data.source, message);
 					
-						$("#a-" + data.source).addClass("active");
+						$("#a-" + data.source).addClass("unread");
 					}
 					break;
 				case "nameChange":

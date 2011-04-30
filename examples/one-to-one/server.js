@@ -24,6 +24,15 @@ var httpServer = http.createServer(function(req, res) {
             	res.end();
             });
 			break;
+		case "/bullet_green.png":
+		case "/bullet_red.png":
+		case "/bullet_yellow.png":
+			fs.readFile("./" + path, function(err, data){
+                res.writeHead(200, {"Content-Type": "image/png"});
+            	res.write(data, "binary");
+            	res.end();
+            });
+			break;
         case "/jquery-1.5.2.min.js":
 		case "/cint.js":
 		case "/client.js":
@@ -93,7 +102,7 @@ minotaur.on("connect", function(session) {
 						// send message to sender
 						minotaur.send(
 							session.sid,
-							{cmd: "msg", source: "me", content: message.content}
+							{cmd: "msg", source: message.dest, me: true, content: message.content}
 						);
 					}
 					break;
@@ -128,7 +137,7 @@ minotaur.on("connect", function(session) {
     session.on("disconnect", function(message) {
 		supervisor.detachUser(session.sid);
 		// tell everyone that I'm offline
-        minotaur.broadcast({cmd: "out", sid: session.sid});
+        minotaur.broadcast({cmd: "out", id: session.sid});
     });
 });
 
