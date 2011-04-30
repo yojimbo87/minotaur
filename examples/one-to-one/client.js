@@ -2,11 +2,6 @@ function debug(message) {
 	$("#debug").append(message + "<br />");
 }
 
-/*function sendMessage() {
-	var textSend = $("#text-send");
-    minitaur.send({"cmd": "msg", "source": "out", "content": textSend.val()});
-    textSend.val("");
-}*/
 
 $(document).ready(function () {
     debug("Ready<br />");
@@ -22,9 +17,6 @@ $(document).ready(function () {
 	);
 	
 	minitaur.on("connect", function() {
-		/*var chatArea = $("#area-chat");
-        chatArea.append("<div class=\"msg\">Connected ...</div>");
-        chatArea.scrollTop(chatArea[0].scrollHeight);*/
 		debug("connected");
 		
 		minitaur.send({cmd: "getName"});
@@ -35,10 +27,13 @@ $(document).ready(function () {
 	
 		switch(data.cmd) {
             case "in":
-				cint.attachOnlineUser(data.id, data.name);
+				cint.attachUser({
+					id: data.id,
+					name: data.name
+				});
                 break;
             case "out":
-				cint.detachOnlineUser(data.id);
+				cint.detachUser(data.id);
                 break;
 			case "getName":
 				$("#text-name").val(data.name);
