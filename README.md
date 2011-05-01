@@ -25,4 +25,5 @@ TODO
 
  * Pass options object to minotaur
  * Poll (sub)domain assignment through options object
- * One-to-one chat
+ * npm support
+ * docs
