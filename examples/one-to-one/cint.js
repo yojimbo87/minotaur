@@ -18,6 +18,8 @@ var cint = (function(undefined) {
   .
 ------------------------------------------------------------------------------*/
 	function init(
+		userListItemTemplate,
+		messageTemplate,
 		onlineListElement, 
 		actorsListElement,
 		actorTitleElement,
@@ -26,6 +28,8 @@ var cint = (function(undefined) {
 		inputElement,
 		submitElement
 	) {
+		tmplUserListItem = userListItemTemplate;
+		tmplMessage = messageTemplate;
 		elementOnline = onlineListElement;
 		elementActors = actorsListElement;
 		elementActorTitle = actorTitleElement;
@@ -78,8 +82,7 @@ var cint = (function(undefined) {
 			users[user.id] = newUser;
 			usersCount++;
 		
-			$("<li id=\"o-" + newUser.id + "\">" + newUser.name + "</li>").appendTo(elementOnline);
-			$("#o-" + newUser.id).addClass("online");
+			tmplUserListItem.tmpl(newUser).appendTo(elementOnline);
 			
 			debug("Attached user " + newUser.id);
 		}
@@ -97,17 +100,19 @@ var cint = (function(undefined) {
 		var user = users[userID],
 			elementA = $("#a-" + userID),
 			elementO = $("#o-" + userID),
-			activeID = elementActiveActor.val();;
+			activeID = elementActiveActor.val();
 	
 		if(user) {
 			if(user.isListed) {
-				var message = "<div class=\"msg\">OFFLINE</div>";
 				user.status = "offline";
 				
 				if(user.id === activeID) {
-					elementHistory.append(message);
+					tmplMessage.tmpl({
+						me: false,
+						content: "OFFLINE"
+					}).appendTo(elementHistory);
 				}
-				addUserHistory(userID, "OFFLINE");
+				addUserHistory(userID, "<div class=\"msg-me\">OFFLINE</div>");
 				
 				elementA.removeClass("online");
 				elementA.addClass("offline");
@@ -160,8 +165,7 @@ var cint = (function(undefined) {
 			// if users is not in chatters list
 			if($("#a-" + userID).length === 0) {
 				user.isListed = true;
-				$("<li id=\"a-" + user.id + "\">" +  user.name + "</li>").appendTo(elementActors);
-				$("#a-" + user.id).addClass("online");
+				tmplUserListItem.tmpl(user).appendTo(elementActors);
 			}
 		
 			if(activeID !== userID) {
@@ -236,28 +240,27 @@ var cint = (function(undefined) {
 			switch(data.cmd) {
 				case "msg":
 					user = users[data.source];
+					
+					if(data.me) {
+						message = "<div class=\"msg-me\">" + data.content + "</div>";
+					} else {
+						message = "<div class=\"msg\">" + data.content + "</div>";
+					}
 					// received message belongs to active conversation
 					if(user.id === activeID) {
-						if(data.me) {
-							message = "<div class=\"msg-me\">" + data.content + "</div>";
-						} else {
-							message = "<div class=\"msg\">" + data.content + "</div>";
-						}
-						elementHistory.append(message);
+						tmplMessage.tmpl({
+							me: data.me,
+							content: data.content
+						}).appendTo(elementHistory);
+						
 						$("#history").scrollTop($("#history")[0].scrollHeight);
 						addUserHistory(user.id, message);
 					} else {
 						if($("#a-" + user.id).length === 0) {
 							user.isListed = true;
-							$("<li id=\"a-" + user.id + "\">" +  user.name + "</li>").appendTo(elementActors);
-							$("#a-" + user.id).addClass("online");
+							tmplUserListItem.tmpl(user).appendTo(elementActors);
 						}
 						
-						if(data.me) {
-							message = "<div class=\"msg-me\">" + data.content + "</div>";
-						} else {
-							message = "<div class=\"msg\">" + data.content + "</div>";
-						}
 						addUserHistory(user.id, message);
 					
 						$("#a-" + user.id).addClass("unread");

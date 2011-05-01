@@ -7,6 +7,8 @@ $(document).ready(function () {
     debug("Ready<br />");
 	
 	cint.init(
+		$("#tmpl-li-user"),
+		$("#tmpl-message"),
 		$("#list-online"),
 		$("#list-actors"),
 		$("#active-actor"),
