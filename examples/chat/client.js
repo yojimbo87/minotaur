@@ -74,7 +74,9 @@ $(document).ready(function () {
         //setTimeout(minitaur.connect, 10000);
     });
 	
-	minitaur.init();
+	minitaur.init({
+		host: "master.developmententity.sk:8080"
+	});
 	
 	// bind button click event for sending message
     $("#button-send").click(function() {
