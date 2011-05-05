@@ -39,7 +39,15 @@ var httpServer = http.createServer(function(req, res) {
 httpServer.listen(PORT);
 util.log("Listening on port " + PORT);
 
-var minotaur = new Minotaur(httpServer);
+var minotaur = new Minotaur({
+	server: httpServer,
+	domain: "developmententity.sk",
+	subdomainPool: [
+		"rt01", "rt02", "rt03", "rt04", "rt05", "rt06", "rt07", "rt08", "rt09", 
+		"rt10", "rt11", "rt12", "rt13", "rt14", "rt15", "rt16", "rt17", "rt18",
+		"rt19", "rt20"
+	]
+});
 
 minotaur.on("connect", function(session) {
     minotaur.broadcast({cmd: "in", sid: session.sid}, session.sid);
