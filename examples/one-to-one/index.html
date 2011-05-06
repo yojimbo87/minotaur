@@ -19,10 +19,12 @@
 			<script id="tmpl-message" type="text/x-jquery-tmpl">
 				{{if me}}
 					<div class="msg-me">
+						<span class="name">me: </span>
 						${content}
 					</div>
 				{{else}}
 					<div class="msg">
+						<span class="name">${name}: </span>
 						${content}
 					</div>
 				{{/if}}
@@ -42,11 +44,13 @@
 					<div id="area-history">
 						<div id="active-actor">empty</div>
 						<input type="hidden" value="0" id="hidden-actor" />
-						<div id="history"></div>
+						<div id="history">
+						</div>
 					</div>
 					<div id="area-controls">
-						<input type="text" autocomplete="off" id="text-send" />
-						<input type="submit" value="Send" id="button-send" />
+						<!--<input type="text" autocomplete="off" id="text-send" />-->
+						<textarea id="text-send" rows="3" cols="20"></textarea>
+						<!--<input type="submit" value="Send" id="button-send" />-->
 					</div>
 				</div>
 				<div id="area-actors">

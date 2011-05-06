@@ -63,7 +63,9 @@ $(document).ready(function () {
 		debug("disconnected");
     });
 	
-	minitaur.connect();
+	minitaur.connect({
+		host: "master.developmententity.sk:8080"
+	});
 	
 	$("#button-name").click(function() {
 		minitaur.send({cmd: "setName", name: $("#text-name").val()});

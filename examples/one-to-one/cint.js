@@ -55,7 +55,8 @@ var cint = (function(undefined) {
 		
 		// bind enter key event for sending message
 		elementInput.keyup(function(e) {
-			if(e.keyCode == 13) {
+			var code = (e.keyCode ? e.keyCode : e.which);
+			if(code == 13) {
 				sendMessage();
 			}
 		});
@@ -109,10 +110,16 @@ var cint = (function(undefined) {
 				if(user.id === activeID) {
 					tmplMessage.tmpl({
 						me: false,
+						name: user.name,
 						content: "OFFLINE"
 					}).appendTo(elementHistory);
 				}
-				addUserHistory(userID, "<div class=\"msg-me\">OFFLINE</div>");
+				addUserHistory(
+					userID, 
+					"<div class=\"msg\">" +
+					"<span class=\"name\">" + user.name + ": </span>" +
+					"OFFLINE</div>"
+				);
 				
 				elementA.removeClass("online");
 				elementA.addClass("offline");
@@ -242,14 +249,19 @@ var cint = (function(undefined) {
 					user = users[data.source];
 					
 					if(data.me) {
-						message = "<div class=\"msg-me\">" + data.content + "</div>";
+						message = "<div class=\"msg-me\">" +
+						"<span class=\"name\">me: </span>" +
+						data.content + "</div>";
 					} else {
-						message = "<div class=\"msg\">" + data.content + "</div>";
+						message = "<div class=\"msg\">" +
+						"<span class=\"name\">" + user.name +": </span>" +
+						data.content + "</div>";
 					}
 					// received message belongs to active conversation
 					if(user.id === activeID) {
 						tmplMessage.tmpl({
 							me: data.me,
+							name: user.name,
 							content: data.content
 						}).appendTo(elementHistory);
 						

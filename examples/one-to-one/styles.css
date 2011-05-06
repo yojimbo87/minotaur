@@ -11,9 +11,11 @@ body { background: white; font-family: Verdana, Arial; font-size: 12px; margin: 
 #area-active { border-top: 1px solid black; border-bottom: 1px solid black; height: 500px; float: left; width: 446px; }
 #active-actor { background: #fbdb7b; line-height: 24px; text-align: center; text-indent: 4px; width: 100%; }
 #area-history { }
+
 #area-controls { border-top: 1px solid black; width: 100%; }
-#history { height: 449px; overflow: auto; }
-#text-send { border: 0px none; outline: none; padding: 0 0 0 8px; width: 370px; }
+/*#history { height: 449px; overflow: auto; overflow-y: scroll; }*/
+#history { height: 415px; overflow: auto; overflow-y: scroll; }
+#text-send { border: 0px none; outline: none; padding: 4px 4px 0 4px; width: 370px; }
 
 #area-actors { border: 1px solid black; height: 500px; float: right; overflow: auto; width: 270px; }
 
@@ -25,5 +27,6 @@ ul li.active { color: green; }
 ul li.unread { color: red; }
 ul li:hover { color: blue; cursor: pointer; }
 
-.msg { padding: 4px 0; text-indent: 4px; width: 100%; word-wrap: break-word; }
-.msg-me { background: #fbf2d9; padding: 4px 0; text-indent: 4px; width: 100%; word-wrap: break-word; }
+.name { font-weight: bold; padding: 0 0 4px 0; }
+.msg { padding: 4px 8px; width: 413px; word-wrap: break-word; }
+.msg-me { background: #fbf2d9; padding: 4px 8px; width: 413px; word-wrap: break-word; }
