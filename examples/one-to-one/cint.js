@@ -20,20 +20,24 @@ var cint = (function(undefined) {
 	function init(
 		userListItemTemplate,
 		messageTemplate,
+		historyTitleTemplate,
 		onlineListElement, 
 		actorsListElement,
 		actorTitleElement,
 		activeActorElement,
+		closeElement,
 		historyElement,
 		inputElement,
 		submitElement
 	) {
 		tmplUserListItem = userListItemTemplate;
 		tmplMessage = messageTemplate;
+		tmplHistoryTitle = historyTitleTemplate;
 		elementOnline = onlineListElement;
 		elementActors = actorsListElement;
 		elementActorTitle = actorTitleElement;
 		elementActiveActor = activeActorElement;
+		elementClose = closeElement;
 		elementHistory = historyElement;
 		elementInput = inputElement;
 		elementSubmit = submitElement;
@@ -48,12 +52,42 @@ var cint = (function(undefined) {
 			activateUser(userID);
 		});
 		
-		// bind button click event for sending message
+		$("li", elementActors).live("mouseover",
+			function() {
+				var user = users[this.id.substring(2)];
+				
+				if(user) {
+					$("#jGrowl").jGrowl(
+						user.id,
+						{
+							header: user.name
+						}
+					);
+				}
+			}
+		);
+		
+		// click event for closing active conversation and user
+		elementClose.live("click", function() {
+			var activeID;
+		
+			if(confirm("Close conversation and remove user from list?")) {
+				activeID = elementActiveActor.val();
+				detachUser(activeID, true);
+				
+				elementActiveActor.val("0");
+				elementHistory.html("");
+				elementActorTitle.html("");
+				tmplHistoryTitle.tmpl({ empty: true}).appendTo(elementActorTitle);
+			}
+		});
+		
+		// click event for sending message
 		elementSubmit.click(function() {
 			sendMessage();
 		});
 		
-		// bind enter key event for sending message
+		// key event for sending message
 		elementInput.keyup(function(e) {
 			var code = (e.keyCode ? e.keyCode : e.which);
 			if(code == 13) {
@@ -97,14 +131,14 @@ var cint = (function(undefined) {
   
   .
 ------------------------------------------------------------------------------*/
-	function detachUser(userID) {
+	function detachUser(userID, remove) {
 		var user = users[userID],
 			elementA = $("#a-" + userID),
 			elementO = $("#o-" + userID),
 			activeID = elementActiveActor.val();
 	
 		if(user) {
-			if(user.isListed) {
+			if(user.isListed && (!remove)) {
 				user.status = "offline";
 				
 				if(user.id === activeID) {
@@ -116,9 +150,7 @@ var cint = (function(undefined) {
 				}
 				addUserHistory(
 					userID, 
-					"<div class=\"msg\">" +
-					"<span class=\"name\">" + user.name + ": </span>" +
-					"OFFLINE</div>"
+					{ me: false, name: user.name, content: "OFFLINE" }
 				);
 				
 				elementA.removeClass("online");
@@ -169,15 +201,19 @@ var cint = (function(undefined) {
 			activeID = elementActiveActor.val();
 		
 		if(user) {
-			// if users is not in chatters list
 			if($("#a-" + userID).length === 0) {
+				// if users is not in chatters list
 				user.isListed = true;
 				tmplUserListItem.tmpl(user).appendTo(elementActors);
 			}
 		
 			if(activeID !== userID) {
 				elementActiveActor.val(user.id);
-				elementActorTitle.html(user.name);
+				elementActorTitle.html("");
+				tmplHistoryTitle.tmpl({
+					empty: false,
+					name: user.name
+				}).appendTo(elementActorTitle);
 				
 				$("li", elementActors).each(function(index) {
 					$(this).removeClass("active");
@@ -192,13 +228,11 @@ var cint = (function(undefined) {
 				
 				elementHistory.text("");
 				history = user.history;
-
+				
+				// if there are messages in history apply the message template,
+				// print it to history element and scrolldown
 				if(history.length > 0) {
-					for(i = 0, len = history.length; i < len; i++) {
-						messages += history[i];
-					}
-
-					elementHistory.html(messages);
+					tmplMessage.tmpl(history).appendTo(elementHistory);
 					elementHistory.scrollTop(elementHistory[0].scrollHeight);
 				}
 				
@@ -249,16 +283,21 @@ var cint = (function(undefined) {
 					user = users[data.source];
 					
 					if(data.me) {
-						message = "<div class=\"msg-me\">" +
-						"<span class=\"name\">me: </span>" +
-						data.content + "</div>";
+						message = { 
+							me: true, 
+							name: "me", 
+							content: data.content 
+						};
 					} else {
-						message = "<div class=\"msg\">" +
-						"<span class=\"name\">" + user.name +": </span>" +
-						data.content + "</div>";
+						message = { 
+							me: false, 
+							name: user.name, 
+							content: data.content 
+						};
 					}
-					// received message belongs to active conversation
+					
 					if(user.id === activeID) {
+						// received message belongs to active conversation
 						tmplMessage.tmpl({
 							me: data.me,
 							name: user.name,
@@ -295,7 +334,11 @@ var cint = (function(undefined) {
 					}
 					
 					if(elementActiveActor.val() === data.id) {
-						elementActorTitle.html(data.name);
+						elementActorTitle.html("");
+						tmplHistoryTitle.tmpl({
+							empty: false,
+							name: user.name
+						}).appendTo(elementActorTitle);
 					}
 					break;
 				default:

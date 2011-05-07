@@ -19,11 +19,11 @@ Dependencies
 **Client side:**
 
  * [jQuery](http://jquery.com/) for writing less and doing more
+ * [jquery-tmpl](https://github.com/jquery/jquery-tmpl) in one-to-one example
+ * [jGrowl](http://stanlemon.net/projects/jgrowl.html) in one-to-one example
 
 TODO
 ----
 
- * Pass options object to minotaur
- * Poll (sub)domain assignment through options object
  * npm support
  * docs

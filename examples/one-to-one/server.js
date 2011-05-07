@@ -18,7 +18,8 @@ var httpServer = http.createServer(function(req, res) {
             });
             break;
 		case "/styles.css":
-			fs.readFile("./styles.css", function(err, data){
+		case "/jquery.jgrowl.css":
+			fs.readFile("./" + path, function(err, data){
                 res.writeHead(200, {"Content-Type": "text/css"});
             	res.write(data, "utf8");
             	res.end();
@@ -27,13 +28,15 @@ var httpServer = http.createServer(function(req, res) {
 		case "/bullet_green.png":
 		case "/bullet_red.png":
 		case "/bullet_yellow.png":
+		case "/close.png":
+		case "/send.png":
 			fs.readFile("./" + path, function(err, data){
                 res.writeHead(200, {"Content-Type": "image/png"});
             	res.write(data, "binary");
             	res.end();
             });
 			break;
-        case "/jquery-1.5.2.min.js":
+        case "/jquery.jgrowl_minimized.js":
 		case "/cint.js":
 		case "/client.js":
             fs.readFile("./" + path, function(err, data){

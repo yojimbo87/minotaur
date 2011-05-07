@@ -4,7 +4,8 @@
         <title>Minotaur one-to-one chat example</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="robots" content="noindex,nofollow" />
-		<link rel="stylesheet" type="text/css" href="styles.css">
+		<link rel="stylesheet" type="text/css" href="styles.css" />
+		<link rel="stylesheet" type="text/css" href="jquery.jgrowl.css" />
     </head>
     <body>
         <div id="container">
@@ -29,6 +30,15 @@
 					</div>
 				{{/if}}
 			</script>
+			
+			<script id="tmpl-history-title" type="text/x-jquery-tmpl">
+				{{if empty}}
+					Empty
+				{{else}}
+					${name}
+					<div id="button-close" class="button-chat"></div>
+				{{/if}}
+			</script>
 		
 			<div id="area-name">
 				<b>My name is:</b> 
@@ -48,13 +58,12 @@
 						</div>
 					</div>
 					<div id="area-controls">
-						<!--<input type="text" autocomplete="off" id="text-send" />-->
-						<textarea id="text-send" rows="3" cols="20"></textarea>
-						<!--<input type="submit" value="Send" id="button-send" />-->
+						<textarea id="text-send"></textarea>
+						<div id="button-send" class="button-chat"></div>
 					</div>
 				</div>
 				<div id="area-actors">
-					<div class="title">Chatters</div>
+					<div class="title">Chatters<div id="jGrowl"></div></div>
 					<ul id="list-actors"></ul>
 				</div>
 			</div>
@@ -62,8 +71,9 @@
 			</div>
 		</div>
 		
-		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js" type="text/javascript"></script>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6/jquery.min.js" type="text/javascript"></script>
 		<script src="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js" type="text/javascript"></script>
+		<script src="jquery.jgrowl_minimized.js" type="text/javascript"></script>
 		<script src="minitaur.js" type="text/javascript"></script>
 		<script src="cint.js" type="text/javascript"></script>
 		<script src="client.js" type="text/javascript"></script>

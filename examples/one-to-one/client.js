@@ -9,10 +9,12 @@ $(document).ready(function () {
 	cint.init(
 		$("#tmpl-li-user"),
 		$("#tmpl-message"),
+		$("#tmpl-history-title"),
 		$("#list-online"),
 		$("#list-actors"),
 		$("#active-actor"),
 		$("#hidden-actor"),
+		$("#button-close"),
 		$("#history"),
 		$("#text-send"),
 		$("#button-send")

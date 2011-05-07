@@ -3,19 +3,23 @@ ul { font-size: 10px; list-style: none; margin: 0px; padding: 0px; }
 body { background: white; font-family: Verdana, Arial; font-size: 12px; margin: 20px 0 0 0; padding: 0; }
 #container { margin: 0px auto; position: relative; width: 990px; }
 #area-name { margin: 0 0 20px 0; }
-#area-chat { /*background: red;*/ overflow: hidden; }
+#area-chat { overflow: hidden; }
 
 #area-online { border: 1px solid black; height: 500px; float: left; overflow: auto; width: 270px; }
 .title { background: #f4b82c; font-weight: bold; line-height: 24px; text-indent: 4px; width: 100%; }
 
 #area-active { border-top: 1px solid black; border-bottom: 1px solid black; height: 500px; float: left; width: 446px; }
 #active-actor { background: #fbdb7b; line-height: 24px; text-align: center; text-indent: 4px; width: 100%; }
-#area-history { }
+#button-close { background: transparent url('/close.png') no-repeat 50% 50%; float: right; height: 24px; }
 
-#area-controls { border-top: 1px solid black; width: 100%; }
-/*#history { height: 449px; overflow: auto; overflow-y: scroll; }*/
+#area-controls { border-top: 1px solid black; overflow: hidden; width: 100%; }
 #history { height: 415px; overflow: auto; overflow-y: scroll; }
-#text-send { border: 0px none; outline: none; padding: 4px 4px 0 4px; width: 370px; }
+
+.button-chat { display: block; height: 16px; width: 16px; }
+.button-chat:hover { cursor: pointer; }
+
+#text-send { border: 0px none; float: left; height: 54px; /*outline: none;*/ overflow: hidden; padding: 4px 4px 0 4px; width: 406px; }
+#button-send { background: transparent url('/send.png') no-repeat 50% 50%; float: right; padding: 8px; }
 
 #area-actors { border: 1px solid black; height: 500px; float: right; overflow: auto; width: 270px; }
 
