@@ -74,7 +74,7 @@ $(document).ready(function () {
         //setTimeout(minitaur.connect, 10000);
     });
 	
-	minitaur.init({
+	minitaur.connect({
 		host: "master.developmententity.sk:8080"
 	});
 	
@@ -89,21 +89,4 @@ $(document).ready(function () {
             sendMessage();
         }
     });
-	
-	// handle disconnect button click
-	$("#button-disconnect").click(function() {
-		//minitaur.disconnect();
-		localStorage.setItem("messages", "omg");
-    });
-	
-	// handle unloading of website
-	window.onbeforeunload = function() {
-		minitaur.processUnload();
-	};
-	
-	$(window).bind("storage", function(event) {
-		var storageEvent = event.originalEvent;
-
-		minitaur.processStorageEvent(storageEvent.key, storageEvent.newValue);
-	});
 });
