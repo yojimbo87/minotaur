@@ -22,8 +22,64 @@ Dependencies
  * [jquery-tmpl](https://github.com/jquery/jquery-tmpl) in one-to-one example
  * [jGrowl](http://stanlemon.net/projects/jgrowl.html) in one-to-one example
 
-TODO
-----
+API (minotaur server)
+=====================
 
- * npm support
- * docs
+Minotaur
+--------
+
+**Minotaur(options)** creates a new minotaur instance.
+
+ * options - includes various settings for server
+ 
+    var options = {
+		// (required) http server which will serve static files
+		server: httpServer,
+		// (optional) name of the cookie which will be used to store secured session ID on the client side
+		sessionCookieName: "__mssc",
+		// (optional) long polling timeout
+		pollTimeout: 5000
+		// (optinal) timeout for client disconnection
+		disconnectTimeout: 15000
+		// (optional) pool of subdomains which will be used for assigning unique poll URLs
+		subdomainPool: [ "www1", "www2", "www3" ]
+	};
+	
+**init()** initialize minotaur server and starts listening to incoming connections.
+
+**broadcast(message, [exceptSID])** broadcasts message to all connected session clients.
+
+ * message
+ * exceptSID (optional) - session ID which will be omitted during broadcast
+ 
+**send(sid, message)** send message to specified session based on his session ID.
+
+ * sid - session ID
+ * message
+
+**event: connect(session)** emitted when new session is initiated.
+
+ * session
+
+Session
+-------
+ 
+**property: sid** session ID
+
+**property: clients** object containing clients bound to session
+
+**property: clientsCount** number of client bound to session
+ 
+**property: data** variable for additional data
+
+**property: lastAssignedClientID** client ID which was last assigned
+
+**property: lastAssignedPollDomain** poll domain which was last assigned
+
+**event: message(message)** emitted when new message is received
+
+ * message
+ 
+**event: disconnect** emitted when session is disconnected from server
+ 
+**event: client()** emitted when new client connection (for example new tab) is initiated within existing session.
