@@ -2,37 +2,21 @@ function debug(message) {
 	$("#debug").append(message + "<br />");
 }
 
-// generate random string with given length
-function generateString(sLength) {
-    var text = "",
-		possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",
-		i;
-
-    for(i=0; i < sLength; i++) {
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
-	}
-
-    return text;
-}
-
 function sendMessage() {
 	var textSend = $("#text-send");
-
     minitaur.send({"cmd": "msg", "content": textSend.val()});
-    
     textSend.val("");
 }
 
 $(document).ready(function () {
-    debug("Ready<br />");
-	
+	// client connects with server
 	minitaur.on("connect", function() {
 		var chatArea = $("#area-chat");
-	
         chatArea.append("<div class=\"msg\">Connected ...</div>");
         chatArea.scrollTop(chatArea[0].scrollHeight);
     });
     
+	// client receives a message
     minitaur.on("message", function(data) {
 		var chatArea = $("#area-chat");
 	
@@ -64,16 +48,16 @@ $(document).ready(function () {
         chatArea.scrollTop(chatArea[0].scrollHeight);
     });
 	
+	// client disconnects from server
     minitaur.on("disconnect", function() {
 		var chatArea = $("#area-chat");
-	
         chatArea.append(
 			"<div class=\"msg\">Disconnected, reconnecting ...</div>"
 		);
         chatArea.scrollTop(chatArea[0].scrollHeight);
-        //setTimeout(minitaur.connect, 10000);
     });
 	
+	// initiate client connection with server
 	minitaur.connect({
 		host: "master.developmententity.sk:8080"
 	});

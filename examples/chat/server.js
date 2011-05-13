@@ -6,6 +6,7 @@ var util = require("util"),
 Minotaur = require("../../lib/server/minotaur"),
     PORT = 8080;
 
+// http server for serving static files
 var httpServer = http.createServer(function(req, res) {  
     var path = url.parse(req.url).pathname;
     switch(path) {
@@ -16,7 +17,6 @@ var httpServer = http.createServer(function(req, res) {
 	            res.end();
             });
             break;
-        case "/jquery-1.5.2.min.js":
 		case "/client.js":
             fs.readFile("./" + path, function(err, data){
                 res.writeHead(200, {"Content-Type": "text/javascript"});
@@ -32,29 +32,27 @@ var httpServer = http.createServer(function(req, res) {
             });
 			break;
         default:
-
             break;
     }
 });
 httpServer.listen(PORT);
 util.log("Listening on port " + PORT);
 
+// set up minotaur with settings
 var minotaur = new Minotaur({
-	server: httpServer,
-	domain: "developmententity.sk",
-	subdomainPool: [
-		"rt01", "rt02", "rt03", "rt04", "rt05", "rt06", "rt07", "rt08", "rt09", 
-		"rt10", "rt11", "rt12", "rt13", "rt14", "rt15", "rt16", "rt17", "rt18",
-		"rt19", "rt20"
-	]
+	server: httpServer
 });
 
+// client connects to server
 minotaur.on("connect", function(session) {
+	// broadcast message to everyone (except this client connection) that this
+	// client has connected
     minotaur.broadcast({cmd: "in", sid: session.sid}, session.sid);
-	//util.log("connected in " + session.sid);
-    
+	
+	// client receives message
     session.on("message", function(message) {
         if(message && message.cmd && message.content) {
+			// broadcast message to everyone
             minotaur.broadcast({
 				cmd: message.cmd, 
 				sid: session.sid, 
@@ -62,13 +60,13 @@ minotaur.on("connect", function(session) {
 				iteration: message.iteration
 			});
         }
-		//util.log("got msg " + session.sid + ": " + message);
     });
     
+	// client disconnected from server
     session.on("disconnect", function(message) {
         minotaur.broadcast({cmd: "out", sid: session.sid});
-		//util.log("disconnected " + session.sid);
     });
 });
 
+// initialize minotaur server
 minotaur.init();
