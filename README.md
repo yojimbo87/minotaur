@@ -22,16 +22,18 @@ Dependencies
  * [jquery-tmpl](https://github.com/jquery/jquery-tmpl) in one-to-one example
  * [jGrowl](http://stanlemon.net/projects/jgrowl.html) in one-to-one example
 
+ 
 API (minotaur server)
 =====================
+
 
 Minotaur
 --------
 
-**Minotaur(options)** creates a new minotaur instance.
+Contructor: **Minotaur(options)**
 
- * options - includes various settings for server
- 
+Creates a new minotaur instance based on passed options object.
+
     var options = {
 		// (required) http server which will serve static files
 		server: httpServer,
@@ -45,41 +47,58 @@ Minotaur
 		subdomainPool: [ "www1", "www2", "www3" ]
 	};
 	
-**init()** initialize minotaur server and starts listening to incoming connections.
+Method: **init()** 
 
-**broadcast(message, [exceptSID])** broadcasts message to all connected session clients.
+Initialize minotaur server and starts listening to incoming connections.
 
- * message
- * exceptSID (optional) - session ID which will be omitted during broadcast
+Method: **broadcast(message, [exceptSID])** 
+
+Broadcasts message to all connected session clients. Optional 'exceptSID' parameter is for case when specific session should be omitted from the broadcast.
+
+Method: **send(sid, message)** 
+
+Send message to specified session based on session ID.
+
+Event: **connect(session)** 
+
+Emitted when new session connection is initiated.
+
  
-**send(sid, message)** send message to specified session based on his session ID.
-
- * sid - session ID
- * message
-
-**event: connect(session)** emitted when new session is initiated.
-
- * session
-
 Session
 -------
+
+Property: **sid** 
+
+Session identificator.
+
+Property: **clients** 
+
+Object containing clients stored in hash structure. Field name represents client ID and its value contains client object.
+
+Property: **clientsCount** 
+
+Total number of clients bound to session.
  
-**property: sid** session ID
+Property: **data** 
 
-**property: clients** object containing clients bound to session
+Variable for additional data for session.
 
-**property: clientsCount** number of client bound to session
+Property: **lastAssignedClientID**
+
+Client ID which was last assigned.
+
+Property: **lastAssignedPollDomain** 
+
+Poll domain which was last assigned.
+
+Event: **message(message)** 
+
+Emitted when new message is received.
+
+Event: **disconnect** 
+
+Emitted when session is disconnected from the server.
  
-**property: data** variable for additional data
+Event: **client()** 
 
-**property: lastAssignedClientID** client ID which was last assigned
-
-**property: lastAssignedPollDomain** poll domain which was last assigned
-
-**event: message(message)** emitted when new message is received
-
- * message
- 
-**event: disconnect** emitted when session is disconnected from server
- 
-**event: client()** emitted when new client connection (for example new tab) is initiated within existing session.
+Emitted when new client connection (for example new tab) is initiated within existing session.
