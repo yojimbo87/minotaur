@@ -25,7 +25,7 @@ Dependencies
  * [cookies](https://github.com/jed/cookies) node.js module for cookies manipulation
  * [keygrip](https://github.com/jed/keygrip) node.js module for signing cookies
 
-**Client side:**
+**Client side (node-uuid is included in minitaur.js client):**
 
  * [jQuery](http://jquery.com/) for AJAX stuff
  * [node-uuid](https://github.com/broofa/node-uuid) natively included in minitaur client
@@ -39,35 +39,35 @@ Minotaur module consists of server and client side part. Server side manages com
 Server side
 -----------
 
-var util = require("util"),
-	Minotaur = require("minotaur");
-...
+	var util = require("util"),
+		Minotaur = require("minotaur");
+	...
 
-var httpServer = http.createServer(function(req, res) {
-...
-});
-httpServer.listen(8080);
+	var httpServer = http.createServer(function(req, res) {
+	...
+	});
+	httpServer.listen(8080);
 
-// set up minotaur with settings
-var minotaur = new Minotaur({
-	server: httpServer
-});
+	// set up minotaur with settings
+	var minotaur = new Minotaur({
+		server: httpServer
+	});
 
-minotaur.on("connect", function(session) {
-	// client connects to server
+	minotaur.on("connect", function(session) {
+		// client connects to server
+			
+		session.on("message", function(message) {
+			// server receives a message from client
+		});
 		
-    session.on("message", function(message) {
-        // server receives a message from client
-    });
-    
 
-    session.on("disconnect", function(message) {
-        // client is disconnected from server
-    });
-});
+		session.on("disconnect", function(message) {
+			// client is disconnected from server
+		});
+	});
 
-// initialize minotaur server
-minotaur.init();
+	// initialize minotaur server
+	minotaur.init();
 
 
 Client side (with minitaur.js)
@@ -75,24 +75,24 @@ Client side (with minitaur.js)
 
 Client which communicates with minotaur server is called minitaur.js and is located in **lib/client/minitaur.js**.
 
-minitaur.on("connect", function() {
-	// client connects to server
-});
+	minitaur.on("connect", function() {
+		// client connects to server
+	});
 
-// client receives a message
-minitaur.on("message", function(data) {
-	// client receives a message from server
-});
+	// client receives a message
+	minitaur.on("message", function(data) {
+		// client receives a message from server
+	});
 
-// client disconnects from server
-minitaur.on("disconnect", function() {
-	// client is disconnected from server
-});
+	// client disconnects from server
+	minitaur.on("disconnect", function() {
+		// client is disconnected from server
+	});
 
-// initiate client connection with server
-minitaur.connect({
-	host: "my.domain.xyz:8080"
-});
+	// initiate client connection with server
+	minitaur.connect({
+		host: "my.domain.xyz:8080"
+	});
 
  
 API
