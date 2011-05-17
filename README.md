@@ -9,7 +9,7 @@ web pages and real-time communication from different origins (host, protocol or 
 Dependencies
 ------------
 
-**Server side (all node.js modules are included):**
+**Server side (all node.js modules are natively included which means they are not installed as dependencies through npm):**
 
  * [node.js](http://nodejs.org/)
  * [node-uuid](https://github.com/broofa/node-uuid) node.js module for generating unique session and client IDs
@@ -18,9 +18,7 @@ Dependencies
 
 **Client side:**
 
- * [jQuery](http://jquery.com/) for writing less and doing more
- * [jquery-tmpl](https://github.com/jquery/jquery-tmpl) in one-to-one example
- * [jGrowl](http://stanlemon.net/projects/jgrowl.html) in one-to-one example
+ * [jQuery](http://jquery.com/) for AJAX stuff
 
  
 API (minotaur server)
@@ -30,9 +28,9 @@ API (minotaur server)
 Minotaur
 --------
 
-Contructor: **Minotaur(options)**
+**Minotaur(options)**
 
-Creates a new minotaur instance based on passed options object.
+(Constructor) Creates a new minotaur instance based on passed options object.
 
     var options = {
 		// (required) http server which will serve static files
@@ -47,58 +45,64 @@ Creates a new minotaur instance based on passed options object.
 		subdomainPool: [ "www1", "www2", "www3" ]
 	};
 	
-Method: **init()** 
+**init()** 
 
-Initialize minotaur server and starts listening to incoming connections.
+(Method) Initialize minotaur server and starts listening to incoming connections.
 
-Method: **broadcast(message, [exceptSID])** 
+**broadcast(message, [exceptSID])** 
 
-Broadcasts message to all connected session clients. Optional 'exceptSID' parameter is for case when specific session should be omitted from the broadcast.
+(Method) Broadcasts message to all connected session clients. Optional 'exceptSID' parameter is for case when specific session should be omitted from the broadcast.
 
-Method: **send(sid, message)** 
+**send(sid, message)** 
 
-Send message to specified session based on session ID.
+(Method) Send message to specified session based on session ID.
 
-Event: **connect(session)** 
+**connect(session)** 
 
-Emitted when new session connection is initiated.
+(Event) Emitted when new session connection is initiated.
 
  
 Session
 -------
 
-Property: **sid** 
+**sid** 
 
-Session identificator.
+(Property) Session identificator.
 
-Property: **clients** 
+**clients** 
 
-Object containing clients stored in hash structure. Field name represents client ID and its value contains client object.
+(Property) Object containing clients stored in hash structure. Field name represents client ID and its value contains client object.
 
-Property: **clientsCount** 
+**clientsCount** 
 
-Total number of clients bound to session.
+(Property) Total number of clients bound to session.
  
-Property: **data** 
+**data** 
 
-Variable for additional data for session.
+(Property) Variable for additional data for session.
 
-Property: **lastAssignedClientID**
+**lastAssignedClientID**
 
-Client ID which was last assigned.
+(Property) Client ID which was last assigned.
 
-Property: **lastAssignedPollDomain** 
+**lastAssignedPollDomain** 
 
-Poll domain which was last assigned.
+(Property) Poll domain which was last assigned.
 
-Event: **message(message)** 
+**message(message)** 
 
-Emitted when new message is received.
+(Event) Emitted when new message is received.
 
-Event: **disconnect** 
+**disconnect** 
 
-Emitted when session is disconnected from the server.
+(Event) Emitted when session is disconnected from the server.
  
-Event: **client()** 
+**client()** 
 
-Emitted when new client connection (for example new tab) is initiated within existing session.
+(Event) Emitted when new client connection (for example new tab) is initiated within existing session.
+
+
+TODO
+====
+
+ * Minotaur property for total number of connected sessions.
