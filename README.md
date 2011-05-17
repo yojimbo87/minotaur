@@ -1,15 +1,24 @@
-Minotaur (devel version)
-========================
+Minotaur
+========
 
-Minotaur is a [long poll](http://en.wikipedia.org/wiki/Push_technology) server implemented 
-in [node.js](http://nodejs.org/). Communication with clients is based on [JSONP](http://en.wikipedia.org/wiki/JSONP#JSONP) 
-to overcome [same origin policy](http://en.wikipedia.org/wiki/Same_origin_policy) when serving 
-web pages and real-time communication from different origins (host, protocol or port).
+Minotaur is a cross browser, [long poll](http://en.wikipedia.org/wiki/Push_technology) server implemented in [node.js](http://nodejs.org/). Communication with clients is based on [JSONP](http://en.wikipedia.org/wiki/JSONP#JSONP) transport to overcome [same origin policy](http://en.wikipedia.org/wiki/Same_origin_policy) from different origins (host, protocol or port) during real-time communication.
+
+Installation
+------------
+
+Minotaur module can be installed either through npm
+
+    npm install minotaur
+	
+or cloned from a github respository
+
+    git clone git://github.com/yojimbo87/minotaur.git
+
 
 Dependencies
 ------------
 
-**Server side (all node.js modules are natively included which means they are not installed as dependencies through npm):**
+**Server side (all node.js modules are natively included which means they do not need to be installed as dependencies through npm for example):**
 
  * [node.js](http://nodejs.org/)
  * [node-uuid](https://github.com/broofa/node-uuid) node.js module for generating unique session and client IDs
@@ -20,6 +29,70 @@ Dependencies
 
  * [jQuery](http://jquery.com/) for AJAX stuff
  * [node-uuid](https://github.com/broofa/node-uuid) natively included in minitaur client
+
+
+Usage
+=====
+
+Minotaur module consists of server and client side part. Server side manages communication with multiple clients in real-time long polling technique. Usage principle is shown below.
+
+Server side
+-----------
+
+var util = require("util"),
+	Minotaur = require("minotaur");
+...
+
+var httpServer = http.createServer(function(req, res) {
+...
+});
+httpServer.listen(8080);
+
+// set up minotaur with settings
+var minotaur = new Minotaur({
+	server: httpServer
+});
+
+minotaur.on("connect", function(session) {
+	// client connects to server
+		
+    session.on("message", function(message) {
+        // server receives a message from client
+    });
+    
+
+    session.on("disconnect", function(message) {
+        // client is disconnected from server
+    });
+});
+
+// initialize minotaur server
+minotaur.init();
+
+
+Client side (with minitaur.js)
+------------------------------
+
+Client which communicates with minotaur server is called minitaur.js and is located in **lib/client/minitaur.js**.
+
+minitaur.on("connect", function() {
+	// client connects to server
+});
+
+// client receives a message
+minitaur.on("message", function(data) {
+	// client receives a message from server
+});
+
+// client disconnects from server
+minitaur.on("disconnect", function() {
+	// client is disconnected from server
+});
+
+// initiate client connection with server
+minitaur.connect({
+	host: "my.domain.xyz:8080"
+});
 
  
 API
@@ -122,7 +195,7 @@ Session (server side)
 
 (Event) Emitted when new message is received.
 
-**disconnect** 
+**disconnect()** 
 
 (Event) Emitted when session is disconnected from the server.
  
