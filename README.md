@@ -19,14 +19,43 @@ Dependencies
 **Client side:**
 
  * [jQuery](http://jquery.com/) for AJAX stuff
+ * [node-uuid](https://github.com/broofa/node-uuid) natively included in minitaur client
 
  
-API (minotaur server)
-=====================
+API
+===
+
+Minitaur (client side)
+----------------------
+
+**status**
+
+(Property) Indicates current status of connection with the server.
+
+**connect(options)**
+
+(Method) Initiates connection with the server based on given options.
+
+    var options = {
+		// (required) host which minitaur connects to
+        host: "my.domain.xyz:8080"
+    };
+
+**disconnect()**
+
+(Method) Disconnects from the server.
+
+**send(data)**
+
+(Method) Send data object to server.
+
+**on(eventName, callback)**
+
+(Event) Emitted on connect, message and disconnect event.
 
 
-Minotaur
---------
+Minotaur (server side)
+----------------------
 
 **Minotaur(options)**
 
@@ -62,8 +91,8 @@ Minotaur
 (Event) Emitted when new session connection is initiated.
 
  
-Session
--------
+Session (server side)
+---------------------
 
 **sid** 
 
