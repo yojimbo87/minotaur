@@ -1,0 +1,17 @@
+{
+    "name" : "minotaur",
+	"version": "v0.1.0-beta",
+	"description": "Long poll server using JSONP communication with clients.",
+	"keywords": ["long poll", "server", "jsonp"],
+	"homepage" : "https://github.com/yojimbo87/minotaur",
+	"author" : { 
+      "name" : "Tomas Bosak",
+      "email": "bosak.tomas@gmail.com",
+      "url": "http://tomi.developmententity.sk/"
+    },
+	"repository" : { 
+      "type" : "git",
+      "url" : "git://github.com/yojimbo87/minotaur.git"
+    },
+	"main": "lib/server/minotaur"
+}
