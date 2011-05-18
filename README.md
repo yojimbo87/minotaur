@@ -18,21 +18,21 @@ or cloned from a github respository
 Dependencies
 ------------
 
-**Server side (all node.js modules are natively included which means they do not need to be installed as dependencies through npm for example):**
+**Server side (all node.js modules are included which means they do not need to be installed as dependencies through npm for example):**
 
  * [node.js](http://nodejs.org/)
- * [node-uuid](https://github.com/broofa/node-uuid) node.js module for generating unique session and client IDs
+ * [node-uuid](https://github.com/broofa/node-uuid) node.js module for generating unique session and client GUIDs
  * [cookies](https://github.com/jed/cookies) node.js module for cookies manipulation
  * [keygrip](https://github.com/jed/keygrip) node.js module for signing cookies
 
 **Client side (node-uuid is included in minitaur.js client):**
 
  * [jQuery](http://jquery.com/) for AJAX stuff
- * [node-uuid](https://github.com/broofa/node-uuid) natively included in minitaur client
+ * [node-uuid](https://github.com/broofa/node-uuid) for generating GUIDs
 
 
-Usage
-=====
+Usage and examples
+==================
 
 Minotaur module consists of server and client side part. Server side manages communication with multiple clients in real-time long polling technique. Usage principle is shown below.
 
@@ -40,6 +40,7 @@ Server side
 -----------
 
 	var util = require("util"),
+	
 		Minotaur = require("minotaur");
 	...
 
@@ -94,9 +95,18 @@ Client which communicates with minotaur server is called minitaur.js and is loca
 		host: "my.domain.xyz:8080"
 	});
 
- 
+Simple chat application which uses minotaur module is located in **examples/chat/** folder and it can be run with
+
+    node server.js
+
+command. More complex chat example is [mino-chat](https://github.com/yojimbo87/mino-chat) which demonstrates one to one chat functionality.
+
+
 API
 ===
+
+Minotaur has two crucial components - server side node.js minotaur module and client side JavaScript minitaur.
+
 
 Minitaur (client side)
 ----------------------
@@ -207,4 +217,7 @@ Session (server side)
 TODO
 ====
 
- * Minotaur property for total number of connected sessions.
+ * Tested/supported browsers
+ * Tested node.js version
+ * Known issues
+ * Minotaur.js property for total number of connected sessions
