@@ -99,7 +99,7 @@ Simple chat application which uses minotaur module is located in **examples/chat
 
     node server.js
 
-command. More complex chat example is [mino-chat](https://github.com/yojimbo87/mino-chat) which demonstrates one to one chat functionality.
+command. Do not forget to set host option on the client side in order to initiate long polling correctly (for more information see Minotaur constructor). More complex chat example is [mino-chat](https://github.com/yojimbo87/mino-chat) which demonstrates one to one chat functionality.
 
 
 API
@@ -142,7 +142,7 @@ Minotaur (server side)
 
 **Minotaur(options)**
 
-(Constructor) Creates a new minotaur instance based on passed options object.
+(Constructor) Creates a new minotaur instance based on passed options object. Subdomain pool is used for assigning unique poll URLs for connected clients in order to overcome browser specific [parallel connection](http://www.stevesouders.com/blog/2008/03/20/roundup-on-parallel-connections/) limit when user have multiple tabs opened in one browser context.
 
     var options = {
 		// (required) http server which will serve static files

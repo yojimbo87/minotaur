@@ -59,7 +59,7 @@ $(document).ready(function () {
 	
 	// initiate client connection with server
 	minitaur.connect({
-		host: "master.developmententity.sk:8080"
+		host: "your.domain.xyz:8080"
 	});
 	
 	// bind button click event for sending message
