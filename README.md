@@ -40,7 +40,7 @@ Server side
 -----------
 
 	var util = require("util"),
-	
+		...
 		Minotaur = require("minotaur");
 	...
 
@@ -54,16 +54,28 @@ Server side
 		server: httpServer
 	});
 
+	// new session connects to the minotaur server
 	minotaur.on("connect", function(session) {
-		// client connects to server
-			
-		session.on("message", function(message) {
-			// server receives a message from client
+		
+		// new client is connected within this session
+		// this is for example new opened tab in the browser
+		session.on("clientConnect", function(clientID) {
+			...
 		});
 		
+		// client within this session is disconnected
+		session.on("clientDisconnect", function(clientID) {
+			...
+		});
+		
+		// session receives a message
+		session.on("message", function(message) {
+			...
+		});
 
-		session.on("disconnect", function(message) {
-			// client is disconnected from server
+		// session is disconnected from server
+		session.on("disconnect", function() {
+			...
 		});
 	});
 
@@ -76,18 +88,19 @@ Client side (with minitaur.js)
 
 Client which communicates with minotaur server is called minitaur.js and is located in **lib/client/minitaur.js**.
 
+	// client connects to the server
 	minitaur.on("connect", function() {
-		// client connects to server
+		...
 	});
 
 	// client receives a message
 	minitaur.on("message", function(data) {
-		// client receives a message from server
+		...
 	});
 
 	// client disconnects from server
 	minitaur.on("disconnect", function() {
-		// client is disconnected from server
+		...
 	});
 
 	// initiate client connection with server
@@ -165,9 +178,9 @@ Minotaur (server side)
 
 (Method) Broadcasts message to all connected session clients. Optional 'exceptSID' parameter is for case when specific session should be omitted from the broadcast.
 
-**send(sid, message)** 
+**send(sid, message, clientID)** 
 
-(Method) Send message to specified session based on session ID.
+(Method) Send message to specified session based on session ID. If clientID (optional) is also passed message would be sent only to specific client within the session.
 
 **on("connect", function(session){})** 
 
