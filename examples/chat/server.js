@@ -45,9 +45,24 @@ var minotaur = new Minotaur({
 
 // client connects to server
 minotaur.on("connect", function(session) {
+	// console message about new session connection
+	util.log("+S " + session.sid + " [" + minotaur.sessionsCount + "]");
+	
 	// broadcast message to everyone (except this client connection) that this
 	// client has connected
     minotaur.broadcast({cmd: "in", sid: session.sid}, session.sid);
+	
+	// new session client has connected
+	session.on("clientConnect", function(clientID) {
+		// console message about new session client connection
+		util.log("  +C " + clientID + " [" + session.clientsCount + "]");
+	});
+	
+	// session client has disconnected
+	session.on("clientDisonnect", function(clientID) {
+		// console message about session client disconnection
+		util.log("  -C " + clientID + " [" + session.clientsCount + "]");
+	});
 	
 	// client receives message
     session.on("message", function(message) {
@@ -62,7 +77,12 @@ minotaur.on("connect", function(session) {
     });
     
 	// client disconnected from server
-    session.on("disconnect", function(message) {
+    session.on("disconnect", function() {
+		// console message about session disconnection
+		util.log("-S " + session.sid + " [" + minotaur.sessionsCount + "]");
+		
+		// broadcast to all connected sessions message about this session
+		// disconnection
         minotaur.broadcast({cmd: "out", sid: session.sid});
     });
 });
