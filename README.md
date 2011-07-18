@@ -169,9 +169,9 @@ Minotaur (server side)
 
 (Method) Send message to specified session based on session ID.
 
-**connect(session)** 
+**on("connect", function(session){})** 
 
-(Event) Emitted when new session connection is initiated.
+(Event) Emitted when new session connection is initiated. Callback contains session.
 
  
 Session (server side)
@@ -201,17 +201,21 @@ Session (server side)
 
 (Property) Poll domain which was last assigned.
 
-**message(message)** 
+**on("message", function(message) {})** 
 
-(Event) Emitted when new message is received.
+(Event) Emitted when new message is received. Callback contains message.
 
-**disconnect()** 
+**on("disconnect", function() {})** 
 
 (Event) Emitted when session is disconnected from the server.
  
-**client()** 
+**on("clientConnect", function(clientID) {} )** 
 
-(Event) Emitted when new client connection (for example new tab) is initiated within existing session.
+(Event) Emitted when new client connection (for example new tab) is initiated within existing session. Callback contains client ID.
+
+**on("clientDisconnect", function(clientID) {} )** 
+
+(Event) Emitted when client connection (for example new tab) within existing session is disconnected. Callback contains client ID.
 
 
 TODO
@@ -220,4 +224,3 @@ TODO
  * Tested/supported browsers
  * Tested node.js version
  * Known issues
- * Minotaur.js property for total number of connected sessions
