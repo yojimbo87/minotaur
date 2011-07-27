@@ -40,7 +40,9 @@ util.log("Listening on port " + PORT);
 
 // set up minotaur with settings
 var minotaur = new Minotaur({
-	server: httpServer
+	server: httpServer,
+	pollTimeout: 15000,
+	disconnectTimeout: 20000
 });
 
 // client connects to server
@@ -59,7 +61,7 @@ minotaur.on("connect", function(session) {
 	});
 	
 	// session client has disconnected
-	session.on("clientDisonnect", function(clientID) {
+	session.on("clientDisconnect", function(clientID) {
 		// console message about session client disconnection
 		util.log("  -C " + clientID + " [" + session.clientsCount + "]");
 	});
