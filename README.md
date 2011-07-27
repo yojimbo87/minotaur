@@ -1,7 +1,7 @@
 Minotaur
 ========
 
-Minotaur is a cross browser, [long poll](http://en.wikipedia.org/wiki/Push_technology) server implemented in [node.js](http://nodejs.org/). Communication with clients is based on [JSONP](http://en.wikipedia.org/wiki/JSONP#JSONP) transport to overcome [same origin policy](http://en.wikipedia.org/wiki/Same_origin_policy) from different origins (host, protocol or port) during real-time communication.
+Minotaur is a cross browser, [long poll](http://en.wikipedia.org/wiki/Push_technology) server implemented in [node.js](http://nodejs.org/). Communication with clients is based on [JSONP](http://en.wikipedia.org/wiki/JSONP#JSONP) transport to overcome [same origin policy](http://en.wikipedia.org/wiki/Same_origin_policy) from different origins (host, protocol or port) during real-time communication. Minotaur differentiate between sessions and session clients which are polling within same browser context. For example when user opens 3 browser tabs, only one session is created which consists of three separately polling clients (one for each tab).
 
 Installation
 ------------
@@ -30,7 +30,22 @@ Dependencies
  * [jQuery](http://jquery.com/) for AJAX stuff
  * [node-uuid](https://github.com/broofa/node-uuid) for generating GUIDs
 
+ 
+Tested browsers
+---------------
 
+ * IE: 7, 8, 9
+ * FF: 3.6, 4, 5
+ * Chrome: 10+
+ * Opera: 10+
+
+
+Tested node.js versions
+-----------------------
+ 
+ * v0.4.x
+ 
+ 
 Usage and examples
 ==================
 
@@ -169,7 +184,11 @@ Minotaur (server side)
 		// (optional) pool of subdomains which will be used for assigning unique poll URLs
 		subdomainPool: [ "www1", "www2", "www3" ]
 	};
-	
+
+**clientsCount** 
+
+(Property) Total number of active sessions connected to minotaur server.	
+
 **init()** 
 
 (Method) Initialize minotaur server and starts listening to incoming connections.
@@ -229,11 +248,3 @@ Session (server side)
 **on("clientDisconnect", function(clientID) {} )** 
 
 (Event) Emitted when client connection (for example new tab) within existing session is disconnected. Callback contains client ID.
-
-
-TODO
-====
-
- * Tested/supported browsers
- * Tested node.js version
- * Known issues
