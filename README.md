@@ -185,7 +185,7 @@ Minotaur (server side)
 		subdomainPool: [ "www1", "www2", "www3" ]
 	};
 
-**clientsCount** 
+**sessionsCount** 
 
 (Property) Total number of active sessions connected to minotaur server.	
 
