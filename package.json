@@ -1,6 +1,6 @@
 {
     "name" : "minotaur",
-    "version": "v0.1.8",
+    "version": "v0.1.9",
     "description": "Cross browser, long poll server using JSONP communication with clients.",
     "keywords": ["long poll", "server", "jsonp"],
     "homepage" : "https://github.com/yojimbo87/minotaur",
