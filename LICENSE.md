@@ -2,7 +2,7 @@ The MIT X11 License covers libraries in the minotaur project.
 Some third party libraries come from different projects, and
 are licensed under their own terms.
 
-Copyright (c) [2010 - present] Tomas Bosak, http://tomi.developmententity.sk/
+Copyright (c) [2010 - present] Tomas Bosak, http://yojimbo87.github.com/
  
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
