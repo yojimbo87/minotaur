@@ -19,26 +19,26 @@ $(document).ready(function () {
 	// client receives a message
     minitaur.on("message", function(data) {
 		var chatArea = $("#area-chat");
-	
+
 		switch(data.cmd) {
             case "in":
                 chatArea.append(
 					"<div class=\"msg\">" + 
-					data.sid + 
+					data.cid + 
 					" connected!</div>"
 				);
                 break;
             case "out":
                 chatArea.append(
 					"<div class=\"msg\">" + 
-					data.sid + 
+					data.cid + 
 					" disconnected!</div>"
 				);
                 break;
             case "msg":
 				chatArea.append(
 					"<div class=\"msg\"><b>" + 
-					data.sid + 
+					data.cid + 
 					"</b>: " + data.content + "</div>"
 				);
                 break;
@@ -47,21 +47,31 @@ $(document).ready(function () {
         }
         chatArea.scrollTop(chatArea[0].scrollHeight);
     });
-	
+
 	// client disconnects from server
     minitaur.on("disconnect", function() {
 		var chatArea = $("#area-chat");
         chatArea.append(
-			"<div class=\"msg\">Disconnected, reconnecting ...</div>"
+			"<div class=\"msg\">Disconnected ...</div>"
 		);
         chatArea.scrollTop(chatArea[0].scrollHeight);
     });
-	
+
+    // client error handler
+    minitaur.on("error", function(data) {
+		var chatArea = $("#area-chat");
+        chatArea.append(
+			"<div class=\"msg\">Error, type: " + data.type +
+            ", message: " + data.message + "</div>"
+		);
+        chatArea.scrollTop(chatArea[0].scrollHeight);
+    });
+    
 	// initiate client connection with server
 	minitaur.connect({
-		host: "localhost:8080"
+		host: "my.domain.com:8080"
 	});
-	
+
 	// bind button click event for sending message
     $("#button-send").click(function() {
         sendMessage();

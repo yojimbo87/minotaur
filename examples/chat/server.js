@@ -1,91 +1,60 @@
-var util = require("util"), 
-	http = require("http"),
-	 url = require("url"),
-	  qs = require("querystring"),
-	  fs = require("fs"),
-Minotaur = require("../../lib/server/minotaur"),
-    PORT = 8080;
+var http = require("http");
+    util = require("util"),
+    fs = require("fs"),
+    Minotaur = require("../../lib/server/Minotaur");
 
-// http server for serving static files
-var httpServer = http.createServer(function(req, res) {  
-    var path = url.parse(req.url).pathname;
-    switch(path) {
+var httpServer = http.createServer(function(req, res) {
+    switch(req.url) {
         case "/":
-            fs.readFile("./index.html", function (err, data) {
-                res.writeHead(200, {"Content-Type": "text/html"});
-                res.write(data, "utf8");
-	            res.end();
-            });
+            res.writeHead(200, {'Content-Type': 'text/html'});
+            res.write(fs.readFileSync(__dirname + '/index.html'));
+            res.end();
             break;
-		case "/client.js":
-            fs.readFile("./" + path, function(err, data){
-                res.writeHead(200, {"Content-Type": "text/javascript"});
-            	res.write(data, "utf8");
-            	res.end();
-            });
+        case "/favicon.ico":
+            res.writeHead(200, {'Content-Type': 'image/x-icon'} )
+            res.end();
             break;
-		case "/minitaur.js":
-			fs.readFile("../../lib/client/" + path, function(err, data){
-                res.writeHead(200, {"Content-Type": "text/javascript"});
-            	res.write(data, "utf8");
-            	res.end();
-            });
-			break;
+        case "/minitaur.js":
+            res.writeHead(200, {'Content-Type': 'text/javascript'});
+            res.write(fs.readFileSync('../../lib/client/minitaur.js'));
+            res.end();
+            break;
+        case "/client.js":
+            res.writeHead(200, {'Content-Type': 'text/javascript'});
+            res.write(fs.readFileSync(__dirname + '/client.js'));
+            res.end();
+            break;
         default:
             break;
     }
 });
-httpServer.listen(PORT);
-util.log("Listening on port " + PORT);
+httpServer.listen(8080);
+util.log("Running on 8080");
 
 // set up minotaur with settings
 var minotaur = new Minotaur({
 	server: httpServer,
-	pollTimeout: 15000,
-	disconnectTimeout: 20000
+    subdomainPool: ["www1", "www2"]
 });
 
-// client connects to server
-minotaur.on("connect", function(session) {
-	// console message about new session connection
-	util.log("+S " + session.sid + " [" + minotaur.sessionsCount + "]");
-	
-	// broadcast message to everyone (except this client connection) that this
-	// client has connected
-    minotaur.broadcast({cmd: "in", sid: session.sid}, session.sid);
-	
-	// new session client has connected
-	session.on("clientConnect", function(clientID) {
-		// console message about new session client connection
-		util.log("  +C " + clientID + " [" + session.clientsCount + "]");
-	});
-	
-	// session client has disconnected
-	session.on("clientDisconnect", function(clientID) {
-		// console message about session client disconnection
-		util.log("  -C " + clientID + " [" + session.clientsCount + "]");
-	});
-	
-	// client receives message
-    session.on("message", function(message) {
-        if(message && message.cmd && message.content) {
-			// broadcast message to everyone
-            minotaur.broadcast({
-				cmd: message.cmd, 
-				sid: session.sid, 
-				content: message.content
-			});
-        }
+// client connects to server  
+minotaur.on("connect", function(client) {
+    util.log("+C " + client.id + " [" + minotaur.clientsCount + ", " + minotaur.sessionsCount + "]");
+    minotaur.broadcast({cmd: "in", cid: client.id}, client.id);
+    
+    client.on("message", function(data) {
+        util.log("msg " + client.id);
+        
+        minotaur.broadcast({
+            cmd: data.cmd,
+            cid: client.id,
+            content: data.content
+        });
     });
     
-	// client disconnected from server
-    session.on("disconnect", function() {
-		// console message about session disconnection
-		util.log("-S " + session.sid + " [" + minotaur.sessionsCount + "]");
-		
-		// broadcast to all connected sessions message about this session
-		// disconnection
-        minotaur.broadcast({cmd: "out", sid: session.sid});
+    client.on("disconnect", function(reason) {
+        util.log("-C " + client.id + " [" + minotaur.clientsCount + ", " + minotaur.sessionsCount + "] reason: " + reason);
+        minotaur.broadcast({cmd: "out", cid: client.id});
     });
 });
 
