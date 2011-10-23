@@ -1,7 +1,7 @@
 Minotaur
 ========
 
-Minotaur is a cross browser, [long poll](http://en.wikipedia.org/wiki/Push_technology) server implemented in [node.js](http://nodejs.org/). Communication with clients is based on [JSONP](http://en.wikipedia.org/wiki/JSONP#JSONP) transport to overcome [same origin policy](http://en.wikipedia.org/wiki/Same_origin_policy) from different origins (host, protocol or port) during real-time communication. Minotaur differentiate between sessions and session clients which are polling within same browser context. For example when user opens 3 browser tabs, only one session is created which consists of three separately polling clients (one for each tab).
+Minotaur is a cross browser, [long poll](http://en.wikipedia.org/wiki/Push_technology) server implemented in [node.js](http://nodejs.org/). Communication with clients is based on [JSONP](http://en.wikipedia.org/wiki/JSONP#JSONP) transport to overcome [same origin policy](http://en.wikipedia.org/wiki/Same_origin_policy) from different origins (host, protocol or port) during real-time communication.
 
 Installation
 ------------
@@ -18,24 +18,21 @@ or cloned from a github respository
 Dependencies
 ------------
 
-**Server side (all node.js modules are included which means they do not need to be installed as dependencies through npm for example):**
+**Server side (node-uuid is included in minotaur source):**
 
  * [node.js](http://nodejs.org/)
  * [node-uuid](https://github.com/broofa/node-uuid) node.js module for generating unique session and client GUIDs
- * [cookies](https://github.com/jed/cookies) node.js module for cookies manipulation
- * [keygrip](https://github.com/jed/keygrip) node.js module for signing cookies
 
-**Client side (node-uuid is included in minitaur.js client):**
+**Client side:**
 
  * [jQuery](http://jquery.com/) for AJAX stuff
- * [node-uuid](https://github.com/broofa/node-uuid) for generating GUIDs
 
  
 Tested browsers
 ---------------
 
- * IE: 7, 8, 9
- * FF: 3.6, 4, 5
+ * IE: 7+
+ * FF: 3.6+
  * Chrome: 10+
  * Opera: 10+
 
@@ -49,7 +46,7 @@ Tested node.js versions
 Usage and examples
 ==================
 
-Minotaur module consists of server and client side part. Server side manages communication with multiple clients in real-time long polling technique. Usage principle is shown below.
+Minotaur module consists of server and client side part. Server side manages communication with multiple clients in real-time using long polling technique. Usage principle is shown below.
 
 Server side
 -----------
@@ -69,27 +66,16 @@ Server side
 		server: httpServer
 	});
 
-	// new session connects to the minotaur server
-	minotaur.on("connect", function(session) {
+	// new client connects to the minotaur server
+	minotaur.on("connect", function(client) {
 		
-		// new client is connected within this session
-		// this is for example new opened tab in the browser
-		session.on("clientConnect", function(clientID) {
-			...
-		});
-		
-		// client within this session is disconnected
-		session.on("clientDisconnect", function(clientID) {
-			...
-		});
-		
-		// session receives a message
-		session.on("message", function(message) {
+		// client receives a message
+		client.on("message", function(data) {
 			...
 		});
 
-		// session is disconnected from server
-		session.on("disconnect", function() {
+		// client is disconnected from the minotaur server
+		client.on("disconnect", function(reason) {
 			...
 		});
 	});
@@ -117,31 +103,32 @@ Client which communicates with minotaur server is called minitaur.js and is loca
 	minitaur.on("disconnect", function() {
 		...
 	});
+    
+    // client error handler
+    minitaur.on("error", function(data) {
+        ...
+    });
 
 	// initiate client connection with server
 	minitaur.connect({
-		host: "my.domain.xyz:8080"
+		host: "my.domain.xyz:port"
 	});
 
 Simple chat application which uses minotaur module is located in **examples/chat/** folder and it can be run with
 
     node server.js
 
-command. Do not forget to set host option on the client side in order to initiate long polling correctly (for more information see Minotaur constructor). More complex chat example is [mino-chat](https://github.com/yojimbo87/mino-chat) which demonstrates one to one chat functionality.
+command. Do not forget to set host option on the client side in order to initiate long polling correctly (for more information see Minotaur constructor).
 
 
 API
 ===
 
-Minotaur has two crucial components - server side node.js minotaur module and client side JavaScript minitaur.
+Minotaur has two crucial components - server side node.js minotaur module and client side minitaur.
 
 
 Minitaur (client side)
 ----------------------
-
-**status**
-
-(Property) Indicates current status of connection with the server.
 
 **connect(options)**
 
@@ -149,12 +136,14 @@ Minitaur (client side)
 
     var options = {
 		// (required) host which minitaur connects to
-        host: "my.domain.xyz:8080"
+        host: "my.domain.xyz:8080",
+        // (optional) AJAX request timeout in miliseconds used during initial connection or sending data
+        ajaxTimeout: 35000,
+        // (optional) timeout in miliseconds during individual polling requests
+        pollTimeout: 30000
+        // (optional) used for sending credentials data when connecting to server
+        credentials: ...
     };
-
-**disconnect()**
-
-(Method) Disconnects from the server.
 
 **send(data)**
 
@@ -162,7 +151,7 @@ Minitaur (client side)
 
 **on(eventName, callback)**
 
-(Event) Emitted on connect, message and disconnect event.
+(Event) Emitted on connect, message, disconnect and error event.
 
 
 Minotaur (server side)
@@ -175,76 +164,78 @@ Minotaur (server side)
     var options = {
 		// (required) http server which will serve static files
 		server: httpServer,
-		// (optional) name of the cookie which will be used to store secured session ID on the client side
-		sessionCookieName: "__mssc",
 		// (optional) long polling timeout
-		pollTimeout: 5000
-		// (optinal) timeout for client disconnection
-		disconnectTimeout: 15000
-		// (optional) pool of subdomains which will be used for assigning unique poll URLs
-		subdomainPool: [ "www1", "www2", "www3" ]
+		pollTimeout: 5000,
+		// (optional) pool of subdomains which will be used for assigning unique poll URLs to overcome browser parallel connections limitation
+		subdomainPool: [ "www1", "www2", "www3", ... ]
 	};
-
-**sessionsCount** 
-
-(Property) Total number of active sessions connected to minotaur server.	
-
-**init()** 
-
-(Method) Initialize minotaur server and starts listening to incoming connections.
-
-**broadcast(message, [exceptSID])** 
-
-(Method) Broadcasts message to all connected session clients. Optional 'exceptSID' parameter is for case when specific session should be omitted from the broadcast.
-
-**send(sid, message, clientID)** 
-
-(Method) Send message to specified session based on session ID. If clientID (optional) is also passed message would be sent only to specific client within the session.
-
-**on("connect", function(session){})** 
-
-(Event) Emitted when new session connection is initiated. Callback contains session.
-
- 
-Session (server side)
----------------------
-
-**sid** 
-
-(Property) Session identificator.
-
-**clients** 
-
-(Property) Object containing clients stored in hash structure. Field name represents client ID and its value contains client object.
 
 **clientsCount** 
 
-(Property) Total number of clients bound to session.
+(Property) Total number of actively connected clients to minotaur server.	
+
+**sessionsCount** 
+
+(Property) Total number of actively connected browser sessions to minotaur server. For example one browser session can have multiple tabs, and thus clients, connected to minotaur server.
+
+**init()** 
+
+(Method) Initialize minotaur server and starts listening to incoming client connections.
+
+**disconnect(clientID)** 
+
+(Method) Disconnect specific client connection from minotaur server.
+
+**broadcast(message, [exceptCID])** 
+
+(Method) Broadcasts message to all connected clients. Optional 'exceptCID' parameter is for the case when specific client should be omitted from the broadcast.
+
+**send(clientID, message)** 
+
+(Method) Send message to specified client.
+
+**on("connect", function(client) {})** 
+
+(Event) Emitted when new client connection is initiated. Callback contains client object.
+
  
+Client (server side)
+---------------------
+
+**id** 
+
+(Property) Client identifier.
+
+**sessionID** 
+
+(Property) Session identifier to which this client belongs.
+
+**subdomain** 
+
+(Property) Subdomain name within which is this client polling.
+
+**request** 
+
+(Property) Node.js HTTP request object of this client.
+
+**response** 
+
+(Property) Node.js HTTP response object of this client.
+
 **data** 
 
-(Property) Variable for additional data for session.
-
-**lastAssignedClientID**
-
-(Property) Client ID which was last assigned.
-
-**lastAssignedPollDomain** 
-
-(Property) Poll domain which was last assigned.
+(Property) Variable for additional data for this client.
 
 **on("message", function(message) {})** 
 
-(Event) Emitted when new message is received. Callback contains message.
+(Event) Emitted when new message is received. Callback contains message data.
 
-**on("disconnect", function() {})** 
+**on("disconnect", function(reason) {})** 
 
-(Event) Emitted when session is disconnected from the server.
- 
-**on("clientConnect", function(clientID) {} )** 
+(Event) Emitted when client is disconnected from the server. 
 
-(Event) Emitted when new client connection (for example new tab) is initiated within existing session. Callback contains client ID.
 
-**on("clientDisconnect", function(clientID) {} )** 
+Contributors
+============
 
-(Event) Emitted when client connection (for example new tab) within existing session is disconnected. Callback contains client ID.
+ * Konstantin Starodubtsev
